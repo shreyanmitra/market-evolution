@@ -174,6 +174,9 @@
     <script>
         const width = 1000;
         const height = 667;
+
+        // Detect Safari because foreignObject rendering doesn't work there.
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         
         const svg = d3.select("#chart").append("svg")
             .attr("viewBox", [0, 0, width, height])
@@ -314,7 +317,9 @@
                             
                             const div = fo.append("xhtml:div").attr("class", "container-div");
                             div.append("div").attr("class", "name-label");
-                            div.append("div").attr("class", "val-label");
+                            if (!isSafari){
+                                div.append("div").attr("class", "val-label");
+                            }
                             
                             return g;
                         },
@@ -338,9 +343,11 @@
                                     .text(d => d.data.displayName.toUpperCase());
                                 
                                 // Show values only if there's space
+                                if (!isSafari){
                                 g.select(".val-label")
                                     .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
                                     .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                                }
                             }))
                     );
                 
@@ -357,10 +364,11 @@
                         return area < 2500 ? "8px" : "11px";
                     })
                     .text(d => d.data.displayName.toUpperCase());
-                
+                if (!isSafari){
                 leaf.select(".val-label")
                     .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
                     .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                }
                 
                 // Update annotation
                 const annotation = yearAnnotations[year] || `Market capitalization data for ${year}.`;
