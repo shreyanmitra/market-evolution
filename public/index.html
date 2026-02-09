@@ -187,7 +187,7 @@
             color: #999; /* Light gray placeholder text */
         }
         
-        /* ===== NEW FEATURE: PLAY BUTTON ===== */
+        /* ===== PLAY BUTTON ===== */
         #playButton {
             padding: 10px 20px; /* Inner spacing */
             background: #4CAF50; /* Green background */
@@ -213,7 +213,7 @@
             background: #da190b; /* Darker red on hover */
         }
         
-        /* ===== NEW FEATURE: SEARCH HIGHLIGHT PULSE ANIMATION ===== */
+        /* ===== SEARCH HIGHLIGHT PULSE ANIMATION ===== */
         @keyframes pulse {
             0%, 100% { 
                 stroke-width: 2px; /* Normal width */
@@ -230,7 +230,7 @@
             stroke: #FFD700 !important; /* Gold stroke */
         }
         
-        /* ===== NEW FEATURE: DATA ATTRIBUTION LINKS ===== */
+        /* ===== DATA ATTRIBUTION LINKS ===== */
         .data-attribution {
             margin-top: 10px; /* Space above */
             font-size: 12px; /* Smaller text */
@@ -248,7 +248,7 @@
             text-decoration: underline; /* Underline on hover */
         }
         
-        /* ===== NEW FEATURE: COMPANY TIMELINE CHART ===== */
+        /* ===== COMPANY TIMELINE CHART ===== */
         #timeline-container {
             background: white; /* White background */
             border-radius: 12px; /* Rounded corners */
@@ -328,10 +328,10 @@
             <!-- Display currently selected year -->
             <span id="yearDisplay" style="font-size: 1.5em; font-weight: 800; margin-left: 15px;">2024</span>
             
-            <!-- NEW FEATURE: Play/Pause button for auto-play mode -->
+            <!-- FEATURE: Play/Pause button for auto-play mode -->
             <button id="playButton">▶ Play</button>
             
-            <!-- NEW FEATURE: Search box to find companies -->
+            <!-- FEATURE: Search box to find companies -->
             <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
         </div>
         
@@ -344,7 +344,7 @@
         <!-- Treemap chart container (SVG added dynamically by JavaScript) -->
         <div id="chart-wrapper"><div id="chart"></div></div>
         
-        <!-- NEW FEATURE: Company timeline chart (appears when company is clicked) -->
+        <!-- FEATURE: Company timeline chart (appears when company is clicked) -->
         <div id="timeline-container">
             <span class="timeline-close" onclick="document.getElementById('timeline-container').classList.remove('visible')">×</span>
             <div class="timeline-title" id="timeline-title"></div>
@@ -892,7 +892,7 @@
     <strong>Data Sources:</strong>
     <a href="https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data" target="_blank" rel="noopener">Kaggle S&P 500 Dataset</a> |
     <a href="https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv" target="_blank" rel="noopener">S&P 500 Companies (GitHub)</a> |
-    <a href="https://observablehq.com/@shreyanmitra/assignment-3" target="_blank" rel="noopener">Observable Notebook</a>
+    <a href="https://observablehq.com/d/3cb48db7d2660444" target="_blank" rel="noopener">Observable Notebook</a>
   </div>
 </div>
 </body>
