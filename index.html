@@ -1,0 +1,386 @@
+<!-- See https://observablehq.com/d/3cb48db7d2660444 for my thought process.-->
+ <!-- Written by Shreyan Mitra for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Market Cap Treemap (1989-2024)</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        #controls {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        #legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            border-radius: 3px;
+        }
+        
+        #chart-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        /* Text protection styles */
+        .container-div {
+            color: white;
+            padding: 6px;
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            /* Prevents fragmentation */
+            word-break: keep-all;
+            white-space: normal;
+            pointer-events: none;
+        }
+        
+        .name-label {
+            font-weight: bold;
+            line-height: 1.1;
+            margin-bottom: 2px;
+        }
+        
+        .val-label {
+            font-size: 9px;
+            opacity: 0.85;
+        }
+        
+        input[type=range] {
+            width: 400px;
+            cursor: pointer;
+        }
+        
+        .diagram-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            padding: 36px 32px 32px 32px;
+        }
+        
+        .diagram-title {
+            font-size: 2.4em;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #222;
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+        
+        .diagram-subtitle {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 250px;
+            z-index: 1000;
+        }
+        
+        .tooltip-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        
+        rect {
+            cursor: pointer;
+        }
+        
+        /* Annotation styles */
+        #annotations {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+        
+        .annotation-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <h1 class="diagram-title">Market Cap Treemap (1989-2024)</h1>
+        <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company. Use the slider to time travel through years.</p>
+        
+        <div id="controls">
+            <strong>Time Travel: </strong>
+            <input type="range" id="yearSlider" min="1989" max="2024" value="2024">
+            <span id="yearDisplay" style="font-size: 1.5em; font-weight: 800; margin-left: 15px;">2024</span>
+        </div>
+        
+        <div id="legend"></div>
+        
+        <div id="annotations"></div>
+        
+        <div id="chart-wrapper"><div id="chart"></div></div>
+    </div>
+    
+    <script>
+        const width = 1000;
+        const height = 667;
+        
+        const svg = d3.select("#chart").append("svg")
+            .attr("viewBox", [0, 0, width, height])
+            .style("width", "100%")
+            .style("height", "auto");
+        
+        // Create tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip");
+        
+        // Year annotations based on actual data
+        const yearAnnotations = {
+            1989: "Exxon leads at $62.6B. IBM #2 at $52B. Traditional energy and computing dominate.",
+            1990: "Exxon remains #1 at $64.4B. IBM #2. Walmart enters top 3 as retail giant emerges.",
+            1991: "Exxon #1 at $75.6B. Walmart #2. Microsoft debuts at #15 with $19.7B.",
+            1992: "Exxon #1 at $75.9B. Microsoft climbs to #12. Intel enters at #19.",
+            1993: "Exxon still #1 at $78.4B. Coca-Cola #2. Microsoft drops to #17.",
+            1994: "Exxon #1 at $75.4B. Coca-Cola #2 at $66.3B. Microsoft jumps to #8 at $35.5B.",
+            1995: "Exxon #1 at $100B. Coca-Cola #2 at $93.2B. PC revolution accelerates.",
+            1996: "Coca-Cola becomes #1 at $130.6B! Exxon #2, Intel #3. Microsoft not in top 20.",
+            1997: "Coca-Cola #1 at $164.6B. Microsoft #2 at $157.4B. GE #4. Tech arrives at summit.",
+            1998: "Microsoft takes #1 at $348B! GE #2, Intel #3. Dot-com bubble inflating.",
+            1999: "Microsoft peaks at $604B. Cisco #2 at $355B. GE #3. Bubble at maximum.",
+            2000: "Bubble bursts. Exxon #1 at $302B, GE #2. Cisco #3, Microsoft falls to #6.",
+            2001: "Microsoft #1 at $358B. Exxon #2. Tech sector recovering from crash.",
+            2002: "Microsoft #1 at $276.6B. Exxon #2. Post-bubble consolidation continues.",
+            2003: "Microsoft #1 at $295.3B. Exxon #2 at $269.3B. Stability returns.",
+            2004: "Exxon reclaims #1 at $328B. Microsoft #2. Oil prices rising.",
+            2005: "Exxon #1 at $349.5B. Microsoft #2. Energy sector strengthens.",
+            2006: "Exxon #1 at $447B. Microsoft #2. Oil boom drives valuations.",
+            2007: "Exxon dominates at $504B. Microsoft #2. Apple enters top 20 at #12 ($174B).",
+            2008: "Financial crisis. Exxon #1 at $406B. Walmart #2. All valuations plunge.",
+            2009: "Exxon #1 at $322B. Microsoft #2. Apple surges to #5 at $191B.",
+            2010: "Exxon #1 at $364B. Apple jumps to #2 at $297B! iPhone era begins.",
+            2011: "Exxon #1 at $406B. Apple closes in at #2 with $377.5B.",
+            2012: "Apple becomes #1 at $499.7B, overtaking Exxon ($389.7B). Mobile computing wins.",
+            2013: "Apple #1 at $500.7B. Exxon #2. Amazon enters at #14.",
+            2014: "Apple #1 at $643B. Exxon #2. Facebook (Meta) at #12.",
+            2015: "Apple #1 at $583.6B. Alphabet #2 at $534.8B. Amazon #6. FAANG era.",
+            2016: "Apple #1 at $609B. Alphabet #2. Amazon #6. Cloud computing rises.",
+            2017: "Apple #1 at $860.9B. Alphabet #2. Amazon #4. Tech dominance complete.",
+            2018: "Microsoft #1 at $780.4B. Apple #2 at $746B. Amazon #3. Cloud computing pivotal.",
+            2019: "Apple #1 at $1,288B. Microsoft #2 at $1,200B. First trillion-dollar companies.",
+            2020: "Pandemic surge. Apple #1 at $2,232B. Microsoft #2. Tesla enters at #6 ($677B).",
+            2021: "Apple #1 at $2,902B. Microsoft #2 at $2,522B. Nvidia #7 at $735B.",
+            2022: "Correction year. Apple #1 at $2,067B (down 29%). Microsoft #2. Nvidia #13.",
+            2023: "Apple #1 at $2,994B. Microsoft #2. AI boom starts: Nvidia surges to #5 at $1,223B.",
+            2024: "Apple #1 at $3,785B. Nvidia explodes to #2 at $3,289B! Microsoft #3. AI revolution.",
+            2025: "Nvidia takes #1 at $4,341B! Microsoft #2 at $3,770B. Apple falls to #3 at $3,380B."
+        };
+        
+        // Tooltip event handlers
+        function handleMouseOver(event, d) {
+            tooltip.transition().duration(200).style("opacity", 1);
+            tooltip.html(`
+                <div class="tooltip-title">${d.data.Company}</div>
+                <div><strong>Ticker:</strong> ${d.data.ticker}</div>
+                <div><strong>Sector:</strong> ${d.parent.data.sector}</div>
+                <div><strong>Market Cap:</strong> $${d.data.MarketCap_BillionsUSD}B</div>
+                <div><strong>Rank:</strong> #${d.data.Rank}</div>
+            `)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px");
+            
+            d3.select(event.currentTarget).attr("stroke", "#000").attr("stroke-width", 2);
+        }
+        
+        function handleMouseMove(event) {
+            tooltip
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        }
+        
+        function handleMouseOut(event) {
+            tooltip.transition().duration(200).style("opacity", 0);
+            d3.select(event.currentTarget).attr("stroke", "#fff").attr("stroke-width", 1);
+        }
+        
+        // Load your exported CSV
+        d3.csv("data.csv").then(data => {
+            // Convert strings to numbers
+            data.forEach(d => {
+                d.Year = +d.Year;
+                d.MarketCap_BillionsUSD = +d.MarketCap_BillionsUSD;
+            });
+            
+            // Set up Color Scale
+            const color = d3.scaleOrdinal()
+                .domain([...new Set(data.map(d => d.sector))])
+                .range(d3.schemeTableau10);
+            
+            // Build Legend
+            const legend = d3.select("#legend");
+            color.domain().forEach(sector => {
+                const item = legend.append("div").attr("class", "legend-item");
+                item.append("div").attr("class", "legend-box").style("background", color(sector));
+                item.append("span").text(sector);
+            });
+            
+            function update(year) {
+                const yearData = data.filter(d => d.Year === year);
+                const rolledUp = d3.group(yearData, d => d.sector);
+                
+                // Convert Map to proper hierarchy structure
+                const root = d3.hierarchy({
+                    children: Array.from(rolledUp, ([sector, companies]) => ({
+                        sector: sector,
+                        children: companies
+                    }))
+                })
+                .sum(d => d.MarketCap_BillionsUSD || 0)
+                .sort((a, b) => b.value - a.value);
+                
+                d3.treemap()
+                    .size([width, height])
+                    .paddingOuter(5)
+                    .paddingInner(2)
+                    .round(true)
+                    (root);
+                
+                const leaf = svg.selectAll("g")
+                    .data(root.leaves(), d => d.data.ticker)
+                    .join(
+                        enter => {
+                            const g = enter.append("g")
+                                .attr("transform", d => `translate(${d.x0},${d.y0})`);
+                            
+                            g.append("rect")
+                                .attr("fill", d => color(d.parent.data.sector))
+                                .attr("stroke", "#fff")
+                                .attr("width", d => Math.max(0, d.x1 - d.x0))
+                                .attr("height", d => Math.max(0, d.y1 - d.y0));
+                            
+                            const fo = g.append("foreignObject")
+                                .attr("width", d => Math.max(0, d.x1 - d.x0))
+                                .attr("height", d => Math.max(0, d.y1 - d.y0))
+                                .style("pointer-events", "none");
+                            
+                            const div = fo.append("xhtml:div").attr("class", "container-div");
+                            div.append("div").attr("class", "name-label");
+                            div.append("div").attr("class", "val-label");
+                            
+                            return g;
+                        },
+                        update => update.call(u => u.transition().duration(2000)
+                            .attr("transform", d => `translate(${d.x0},${d.y0})`)
+                            .call(g => {
+                                g.select("rect")
+                                    .attr("width", d => Math.max(0, d.x1 - d.x0))
+                                    .attr("height", d => Math.max(0, d.y1 - d.y0));
+                                
+                                g.select("foreignObject")
+                                    .attr("width", d => Math.max(0, d.x1 - d.x0))
+                                    .attr("height", d => Math.max(0, d.y1 - d.y0));
+                                
+                                // Dynamic Font Scaling
+                                g.select(".name-label")
+                                    .style("font-size", d => {
+                                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);
+                                        return area < 2500 ? "8px" : "11px";
+                                    })
+                                    .text(d => d.data.displayName.toUpperCase());
+                                
+                                // Show values only if there's space
+                                g.select(".val-label")
+                                    .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
+                                    .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                            }))
+                    );
+                
+                // Apply tooltip handlers to ALL rectangles (both new and updated)
+                leaf.select("rect")
+                    .on("mouseover", handleMouseOver)
+                    .on("mousemove", handleMouseMove)
+                    .on("mouseout", handleMouseOut);
+                
+                // Update text content for newly entered elements as well
+                leaf.select(".name-label")
+                    .style("font-size", d => {
+                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);
+                        return area < 2500 ? "8px" : "11px";
+                    })
+                    .text(d => d.data.displayName.toUpperCase());
+                
+                leaf.select(".val-label")
+                    .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
+                    .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                
+                // Update annotation
+                const annotation = yearAnnotations[year] || `Market capitalization data for ${year}.`;
+                d3.select("#annotations")
+                    .html(`<div class="annotation-text"><strong>${year}:</strong> ${annotation}</div>`);
+            }
+            
+            // Slider Event
+            d3.select("#yearSlider").on("input", function() {
+                const val = +this.value;
+                d3.select("#yearDisplay").text(val);
+                update(val);
+            });
+            
+            // Initial render
+            update(2024);
+        });
+    </script>
+<div style="text-align: center; padding: 20px; color: #666; font-size: 14px; border-top: 1px solid #e0e0e0; margin-top: 40px;">
+  Created for CSE442 Class at the University of Washington by Shreyan Mitra.<br>
+</div>
+</body>
+</html>
