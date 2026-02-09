@@ -1,193 +1,381 @@
 <!-- See https://observablehq.com/d/3cb48db7d2660444 for my thought process.-->
- <!-- Written by Shreyan Mitra for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
+<!-- Written by Shreyan Mitra for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Market Cap Treemap (1989-2024)</title>
+    <!-- Load D3.js library version 7 from CDN -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        /* ===== GLOBAL STYLES ===== */
         body {
-            font-family: -apple-system, system-ui, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #333;
+            font-family: -apple-system, system-ui, sans-serif; /* Use system font for native look */
+            margin: 0; /* Remove default margin */
+            padding: 20px; /* Add padding around page edges */
+            background: #f8f9fa; /* Light gray background */
+            color: #333; /* Dark gray text */
         }
         
+        /* ===== CONTROLS SECTION (Year Slider) ===== */
         #controls {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            background: white; /* White background for contrast */
+            padding: 20px; /* Inner spacing */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+            margin-bottom: 20px; /* Space below controls */
         }
         
+        /* ===== LEGEND SECTION (Sector Colors) ===== */
         #legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
+            display: flex; /* Use flexbox for horizontal layout */
+            flex-wrap: wrap; /* Allow items to wrap to next line */
+            gap: 12px; /* Space between legend items */
+            margin-bottom: 20px; /* Space below legend */
         }
         
+        /* Individual legend item (color box + label) */
         .legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 13px;
+            display: flex; /* Horizontal layout for box + text */
+            align-items: center; /* Vertically center items */
+            font-size: 13px; /* Small readable text */
         }
         
+        /* Colored square in legend */
         .legend-box {
-            width: 14px;
-            height: 14px;
-            margin-right: 6px;
-            border-radius: 3px;
+            width: 14px; /* Fixed width */
+            height: 14px; /* Fixed height (square) */
+            margin-right: 6px; /* Space between box and label */
+            border-radius: 3px; /* Slightly rounded corners */
         }
         
+        /* ===== CHART WRAPPER ===== */
         #chart-wrapper {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
+            background: white; /* White background */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Prominent shadow for elevation */
+            overflow: hidden; /* Clip content to rounded corners */
         }
         
-        /* Text protection styles */
+        /* ===== TEXT LABELS INSIDE TREEMAP BOXES ===== */
         .container-div {
-            color: white;
-            padding: 6px;
-            height: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            overflow: hidden;
-            /* Prevents fragmentation */
-            word-break: keep-all;
-            white-space: normal;
-            pointer-events: none;
+            color: white; /* White text for visibility on colored backgrounds */
+            padding: 6px; /* Inner spacing */
+            height: 100%; /* Fill entire foreignObject height */
+            width: 100%; /* Fill entire foreignObject width */
+            box-sizing: border-box; /* Include padding in dimensions */
+            display: flex; /* Use flexbox for centering */
+            flex-direction: column; /* Stack items vertically */
+            justify-content: center; /* Center vertically */
+            align-items: center; /* Center horizontally */
+            text-align: center; /* Center text alignment */
+            overflow: hidden; /* Hide text that doesn't fit */
+            word-break: keep-all; /* Prevent breaking words mid-word */
+            white-space: normal; /* Allow text wrapping */
+            pointer-events: none; /* Let mouse events pass through to rectangles below */
         }
         
+        /* Company name label (first line) */
         .name-label {
-            font-weight: bold;
-            line-height: 1.1;
-            margin-bottom: 2px;
+            font-weight: bold; /* Make company names bold */
+            line-height: 1.1; /* Tight line spacing */
+            margin-bottom: 2px; /* Small space before next line */
         }
         
+        /* Ticker and market cap label (second line) */
         .val-label {
-            font-size: 9px;
-            opacity: 0.85;
+            font-size: 9px; /* Smaller font for secondary info */
+            opacity: 0.85; /* Slightly transparent */
         }
         
+        /* ===== YEAR SLIDER STYLING ===== */
         input[type=range] {
-            width: 400px;
-            cursor: pointer;
+            width: 400px; /* Fixed width for slider */
+            cursor: pointer; /* Show pointer cursor on hover */
         }
         
+        /* ===== MAIN CONTAINER ===== */
         .diagram-container {
-            max-width: 1100px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-            padding: 36px 32px 32px 32px;
+            max-width: 1100px; /* Limit maximum width */
+            margin: 40px auto; /* Center horizontally with top/bottom margin */
+            background: #fff; /* White background */
+            border-radius: 16px; /* Rounded corners */
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12); /* Large shadow for depth */
+            padding: 36px 32px 32px 32px; /* Inner spacing (top, right, bottom, left) */
         }
         
+        /* Main title */
         .diagram-title {
-            font-size: 2.4em;
-            font-weight: 900;
-            margin-bottom: 8px;
-            color: #222;
-            letter-spacing: 0.02em;
-            text-align: center;
+            font-size: 2.4em; /* Large font size */
+            font-weight: 900; /* Extra bold */
+            margin-bottom: 8px; /* Space below title */
+            color: #222; /* Almost black */
+            letter-spacing: 0.02em; /* Slight letter spacing */
+            text-align: center; /* Center align */
         }
         
+        /* Subtitle */
         .diagram-subtitle {
-            font-size: 1.1em;
-            color: #555;
-            margin-bottom: 28px;
-            text-align: center;
+            font-size: 1.1em; /* Slightly larger than body text */
+            color: #555; /* Medium gray */
+            margin-bottom: 28px; /* Space below subtitle */
+            text-align: center; /* Center align */
         }
         
-        /* Tooltip styles */
+        /* ===== TOOLTIP STYLES ===== */
         .tooltip {
-            position: absolute;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            border-radius: 8px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-size: 13px;
-            line-height: 1.5;
-            max-width: 250px;
-            z-index: 1000;
+            position: absolute; /* Position relative to viewport */
+            padding: 12px; /* Inner spacing */
+            background: rgba(0, 0, 0, 0.9); /* Nearly opaque black background */
+            color: white; /* White text */
+            border-radius: 8px; /* Rounded corners */
+            pointer-events: none; /* Don't intercept mouse events */
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.2s; /* Smooth fade in/out */
+            font-size: 13px; /* Readable font size */
+            line-height: 1.5; /* Comfortable line spacing */
+            max-width: 250px; /* Prevent tooltip from being too wide */
+            z-index: 1000; /* Ensure tooltip appears above everything */
         }
         
+        /* Tooltip title (company name) */
         .tooltip-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 6px;
+            font-weight: bold; /* Bold for emphasis */
+            font-size: 14px; /* Slightly larger */
+            margin-bottom: 6px; /* Space below title */
         }
         
+        /* Make rectangles show pointer cursor on hover */
         rect {
-            cursor: pointer;
+            cursor: pointer; /* Indicate interactivity */
         }
         
-        /* Annotation styles */
+        /* ===== YEAR ANNOTATIONS ===== */
         #annotations {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            min-height: 60px;
+            background: white; /* White background */
+            padding: 16px 20px; /* Inner spacing */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow */
+            margin-bottom: 20px; /* Space below */
+            min-height: 60px; /* Minimum height to prevent jumping */
         }
         
+        /* Annotation text styling */
         .annotation-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #444;
+            font-size: 14px; /* Readable size */
+            line-height: 1.6; /* Comfortable line spacing */
+            color: #444; /* Dark gray */
+        }
+        
+        /* ===== NEW FEATURE: SEARCH BOX ===== */
+        #searchBox {
+            padding: 8px 12px; /* Inner spacing */
+            border: 2px solid #ddd; /* Light border */
+            border-radius: 6px; /* Rounded corners */
+            font-size: 14px; /* Readable text */
+            width: 250px; /* Fixed width */
+            margin-left: 20px; /* Space from slider */
+            transition: border-color 0.3s; /* Smooth border color change */
+        }
+        
+        #searchBox:focus {
+            outline: none; /* Remove default outline */
+            border-color: #4CAF50; /* Green border when focused */
+        }
+        
+        #searchBox::placeholder {
+            color: #999; /* Light gray placeholder text */
+        }
+        
+        /* ===== NEW FEATURE: PLAY BUTTON ===== */
+        #playButton {
+            padding: 10px 20px; /* Inner spacing */
+            background: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 6px; /* Rounded corners */
+            font-size: 14px; /* Readable text */
+            font-weight: bold; /* Bold text */
+            cursor: pointer; /* Pointer cursor */
+            margin-left: 20px; /* Space from search box */
+            transition: background 0.3s; /* Smooth color transition */
+        }
+        
+        #playButton:hover {
+            background: #45a049; /* Darker green on hover */
+        }
+        
+        #playButton.playing {
+            background: #f44336; /* Red when playing */
+        }
+        
+        #playButton.playing:hover {
+            background: #da190b; /* Darker red on hover */
+        }
+        
+        /* ===== NEW FEATURE: SEARCH HIGHLIGHT PULSE ANIMATION ===== */
+        @keyframes pulse {
+            0%, 100% { 
+                stroke-width: 2px; /* Normal width */
+                stroke: #FFD700; /* Gold color */
+            }
+            50% { 
+                stroke-width: 6px; /* Thicker stroke */
+                stroke: #FFA500; /* Orange color */
+            }
+        }
+        
+        .search-highlighted {
+            animation: pulse 1.5s infinite; /* Continuous pulsing */
+            stroke: #FFD700 !important; /* Gold stroke */
+        }
+        
+        /* ===== NEW FEATURE: DATA ATTRIBUTION LINKS ===== */
+        .data-attribution {
+            margin-top: 10px; /* Space above */
+            font-size: 12px; /* Smaller text */
+        }
+        
+        .data-attribution a {
+            color: #4CAF50; /* Green links */
+            text-decoration: none; /* No underline */
+            margin: 0 8px; /* Space between links */
+            transition: color 0.3s; /* Smooth color change */
+        }
+        
+        .data-attribution a:hover {
+            color: #45a049; /* Darker green on hover */
+            text-decoration: underline; /* Underline on hover */
+        }
+        
+        /* ===== NEW FEATURE: COMPANY TIMELINE CHART ===== */
+        #timeline-container {
+            background: white; /* White background */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Shadow for elevation */
+            padding: 20px; /* Inner spacing */
+            margin-top: 20px; /* Space above */
+            display: none; /* Hidden by default */
+        }
+        
+        #timeline-container.visible {
+            display: block; /* Show when company is selected */
+        }
+        
+        .timeline-title {
+            font-size: 1.3em; /* Large title */
+            font-weight: bold; /* Bold text */
+            color: #222; /* Dark text */
+            margin-bottom: 15px; /* Space below */
+            text-align: center; /* Center align */
+        }
+        
+        .timeline-close {
+            float: right; /* Position on right */
+            cursor: pointer; /* Pointer cursor */
+            color: #999; /* Gray color */
+            font-size: 1.5em; /* Large X */
+            font-weight: bold; /* Bold */
+            line-height: 1; /* Tight spacing */
+            transition: color 0.3s; /* Smooth color change */
+        }
+        
+        .timeline-close:hover {
+            color: #333; /* Darker on hover */
+        }
+        
+        #timeline-chart .line {
+            fill: none; /* No fill for line */
+            stroke: #4CAF50; /* Green line */
+            stroke-width: 3px; /* Thick line */
+        }
+        
+        #timeline-chart .dot {
+            fill: #4CAF50; /* Green dots */
+            stroke: white; /* White border */
+            stroke-width: 2px; /* Border width */
+            cursor: pointer; /* Pointer cursor */
+        }
+        
+        #timeline-chart .dot:hover {
+            fill: #45a049; /* Darker green on hover */
+            r: 6; /* Larger on hover */
+        }
+        
+        #timeline-chart .axis {
+            font-size: 11px; /* Small axis text */
+        }
+        
+        #timeline-chart .grid line {
+            stroke: #e0e0e0; /* Light gray grid lines */
+            stroke-dasharray: 2,2; /* Dashed lines */
         }
     </style>
 </head>
 <body>
+    <!-- Main container for entire visualization -->
     <div class="diagram-container">
+        <!-- Title -->
         <h1 class="diagram-title">Market Cap Treemap (1989-2024)</h1>
+        <!-- Subtitle with instructions -->
         <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company. Use the slider to time travel through years.</p>
         
+        <!-- Year slider control -->
         <div id="controls">
             <strong>Time Travel: </strong>
+            <!-- Range slider: min=1989, max=2024, starts at 2024 -->
             <input type="range" id="yearSlider" min="1989" max="2024" value="2024">
+            <!-- Display currently selected year -->
             <span id="yearDisplay" style="font-size: 1.5em; font-weight: 800; margin-left: 15px;">2024</span>
+            
+            <!-- NEW FEATURE: Play/Pause button for auto-play mode -->
+            <button id="playButton">▶ Play</button>
+            
+            <!-- NEW FEATURE: Search box to find companies -->
+            <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
         </div>
         
+        <!-- Legend showing sector colors (populated dynamically by JavaScript) -->
         <div id="legend"></div>
         
+        <!-- Year annotations (populated dynamically by JavaScript) -->
         <div id="annotations"></div>
         
+        <!-- Treemap chart container (SVG added dynamically by JavaScript) -->
         <div id="chart-wrapper"><div id="chart"></div></div>
+        
+        <!-- NEW FEATURE: Company timeline chart (appears when company is clicked) -->
+        <div id="timeline-container">
+            <span class="timeline-close" onclick="document.getElementById('timeline-container').classList.remove('visible')">×</span>
+            <div class="timeline-title" id="timeline-title"></div>
+            <div id="timeline-chart"></div>
+        </div>
     </div>
     
     <script>
-        const width = 1000;
-        const height = 667;
+        /* ===== CONFIGURATION CONSTANTS ===== */
+        const width = 1000;  // SVG width in pixels
+        const height = 667;  // SVG height in pixels (roughly 3:2 aspect ratio)
 
-        // Detect Safari because foreignObject rendering doesn't work there.
+        /* ===== BROWSER DETECTION ===== */
+        // Detect Safari browser because it has bugs with foreignObject + flexbox
+        // This regex checks if user agent contains "safari" but NOT "chrome" or "android"
         const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         
+        /* ===== SVG SETUP ===== */
+        // Select the #chart div and append an SVG element to it
         const svg = d3.select("#chart").append("svg")
-            .attr("viewBox", [0, 0, width, height])
-            .style("width", "100%")
-            .style("height", "auto");
+            .attr("viewBox", [0, 0, width, height])  // Set coordinate system (makes it responsive)
+            .style("width", "100%")   // Scale to container width
+            .style("height", "auto"); // Maintain aspect ratio
         
-        // Create tooltip
+        /* ===== TOOLTIP CREATION ===== */
+        // Create tooltip div and append it to body (positioned absolutely)
         const tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip");
+            .attr("class", "tooltip");  // Apply CSS styles from <style> section
         
-        // Year annotations based on actual data
+        /* ===== YEAR ANNOTATIONS DATA ===== */
+        // Object mapping years to historical context descriptions
         const yearAnnotations = {
             1989: "Exxon leads at $62.6B. IBM #2 at $52B. Traditional energy and computing dominate.",
             1990: "Exxon remains #1 at $64.4B. IBM #2. Walmart enters top 3 as retail giant emerges.",
@@ -228,9 +416,13 @@
             2025: "Nvidia takes #1 at $4,341B! Microsoft #2 at $3,770B. Apple falls to #3 at $3,380B."
         };
         
-        // Tooltip event handlers
+        /* ===== TOOLTIP EVENT HANDLERS ===== */
+        
+        // Called when mouse enters a rectangle
         function handleMouseOver(event, d) {
+            // Fade in tooltip over 200ms
             tooltip.transition().duration(200).style("opacity", 1);
+            // Set tooltip HTML content with company details
             tooltip.html(`
                 <div class="tooltip-title">${d.data.Company}</div>
                 <div><strong>Ticker:</strong> ${d.data.ticker}</div>
@@ -238,157 +430,470 @@
                 <div><strong>Market Cap:</strong> $${d.data.MarketCap_BillionsUSD}B</div>
                 <div><strong>Rank:</strong> #${d.data.Rank}</div>
             `)
+            // Position tooltip 10px to right and 10px above mouse cursor
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 10) + "px");
             
+            // Highlight the rectangle with black border
             d3.select(event.currentTarget).attr("stroke", "#000").attr("stroke-width", 2);
         }
         
+        // Called when mouse moves over a rectangle
         function handleMouseMove(event) {
+            // Update tooltip position to follow mouse cursor
             tooltip
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 10) + "px");
         }
         
+        // Called when mouse leaves a rectangle
         function handleMouseOut(event) {
+            // Fade out tooltip over 200ms
             tooltip.transition().duration(200).style("opacity", 0);
+            // Restore rectangle's original white border
             d3.select(event.currentTarget).attr("stroke", "#fff").attr("stroke-width", 1);
         }
         
-        // Load your exported CSV
+        /* ===== DATA LOADING AND VISUALIZATION ===== */
+        // Load CSV file asynchronously and create visualization
         d3.csv("data.csv").then(data => {
-            // Convert strings to numbers
+            
+            /* ----- DATA PREPROCESSING ----- */
+            // Convert string values to numbers for all data rows
             data.forEach(d => {
-                d.Year = +d.Year;
-                d.MarketCap_BillionsUSD = +d.MarketCap_BillionsUSD;
+                d.Year = +d.Year;  // Convert Year to number (+ is shorthand for Number())
+                d.MarketCap_BillionsUSD = +d.MarketCap_BillionsUSD;  // Convert market cap to number
             });
             
-            // Set up Color Scale
+            /* ----- COLOR SCALE SETUP ----- */
+            // Create ordinal color scale for sectors
             const color = d3.scaleOrdinal()
-                .domain([...new Set(data.map(d => d.sector))])
-                .range(d3.schemeTableau10);
+                .domain([...new Set(data.map(d => d.sector))])  // Get unique sector names
+                .range(d3.schemeTableau10);  // Use Tableau 10 color palette (10 distinct colors)
             
-            // Build Legend
+            /* ----- LEGEND CONSTRUCTION ----- */
+            // Select the legend div
             const legend = d3.select("#legend");
+            // For each sector in the color scale's domain, create a legend item
             color.domain().forEach(sector => {
+                // Create container div for this legend item
                 const item = legend.append("div").attr("class", "legend-item");
+                // Add colored box
                 item.append("div").attr("class", "legend-box").style("background", color(sector));
+                // Add sector label text
                 item.append("span").text(sector);
             });
             
+            /* ----- UPDATE FUNCTION (Main visualization logic) ----- */
+            // This function renders the treemap for a given year
             function update(year) {
+                
+                /* --- Filter and group data --- */
+                // Get only data for the selected year
                 const yearData = data.filter(d => d.Year === year);
+                // Group companies by sector (creates a Map: sector -> array of companies)
                 const rolledUp = d3.group(yearData, d => d.sector);
                 
-                // Convert Map to proper hierarchy structure
+                /* --- Create hierarchy --- */
+                // Convert grouped data to D3 hierarchy format
                 const root = d3.hierarchy({
                     children: Array.from(rolledUp, ([sector, companies]) => ({
-                        sector: sector,
-                        children: companies
+                        sector: sector,      // Sector name stored at parent level
+                        children: companies  // Array of company objects
                     }))
                 })
+                // Set value of each node based on market cap (for sizing)
                 .sum(d => d.MarketCap_BillionsUSD || 0)
+                // Sort nodes by value (largest first)
                 .sort((a, b) => b.value - a.value);
                 
+                /* --- Apply treemap layout --- */
                 d3.treemap()
-                    .size([width, height])
-                    .paddingOuter(5)
-                    .paddingInner(2)
-                    .round(true)
-                    (root);
+                    .size([width, height])     // Set total size
+                    .paddingOuter(5)            // Padding around entire treemap
+                    .paddingInner(2)            // Padding between rectangles
+                    .round(true)                // Round positions to integers for crisp rendering
+                    (root);  // Apply layout to root hierarchy (modifies x0, y0, x1, y1 properties)
                 
+                /* --- D3 DATA JOIN PATTERN --- */
+                // Select all <g> elements, bind data with key function
                 const leaf = svg.selectAll("g")
-                    .data(root.leaves(), d => d.data.ticker)
+                    .data(root.leaves(), d => d.data.ticker)  // Use ticker as unique key for data binding
                     .join(
+                        /* ENTER: New elements (companies appearing for first time) */
                         enter => {
+                            // Create group element for each company
                             const g = enter.append("g")
-                                .attr("transform", d => `translate(${d.x0},${d.y0})`);
+                                .attr("transform", d => `translate(${d.x0},${d.y0})`);  // Position at top-left corner
                             
+                            // Add colored rectangle
                             g.append("rect")
-                                .attr("fill", d => color(d.parent.data.sector))
-                                .attr("stroke", "#fff")
-                                .attr("width", d => Math.max(0, d.x1 - d.x0))
-                                .attr("height", d => Math.max(0, d.y1 - d.y0));
+                                .attr("fill", d => color(d.parent.data.sector))  // Color by sector
+                                .attr("stroke", "#fff")  // White border
+                                .attr("width", d => Math.max(0, d.x1 - d.x0))   // Width = right edge - left edge
+                                .attr("height", d => Math.max(0, d.y1 - d.y0)); // Height = bottom edge - top edge
                             
+                            // Add foreignObject to hold HTML content (text labels)
                             const fo = g.append("foreignObject")
                                 .attr("width", d => Math.max(0, d.x1 - d.x0))
                                 .attr("height", d => Math.max(0, d.y1 - d.y0))
-                                .style("pointer-events", "none");
+                                .style("pointer-events", "none");  // Let mouse events pass through to rect
                             
+                            // Add div container inside foreignObject
                             const div = fo.append("xhtml:div").attr("class", "container-div");
+                            // Add company name label
                             div.append("div").attr("class", "name-label");
+                            // Only add ticker/market cap label if NOT Safari (Safari has flexbox bugs)
                             if (!isSafari){
                                 div.append("div").attr("class", "val-label");
                             }
                             
-                            return g;
+                            return g;  // Return the group element
                         },
-                        update => update.call(u => u.transition().duration(2000)
-                            .attr("transform", d => `translate(${d.x0},${d.y0})`)
+                        
+                        /* UPDATE: Existing elements (companies that were already visible) */
+                        update => update.call(u => u.transition().duration(2000)  // Animate over 2 seconds
+                            .attr("transform", d => `translate(${d.x0},${d.y0})`)  // Move to new position
                             .call(g => {
+                                // Update rectangle dimensions
                                 g.select("rect")
                                     .attr("width", d => Math.max(0, d.x1 - d.x0))
                                     .attr("height", d => Math.max(0, d.y1 - d.y0));
                                 
+                                // Update foreignObject dimensions
                                 g.select("foreignObject")
                                     .attr("width", d => Math.max(0, d.x1 - d.x0))
                                     .attr("height", d => Math.max(0, d.y1 - d.y0));
                                 
-                                // Dynamic Font Scaling
+                                // Update company name with dynamic font sizing
                                 g.select(".name-label")
                                     .style("font-size", d => {
-                                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);
-                                        return area < 2500 ? "8px" : "11px";
+                                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);  // Calculate box area
+                                        return area < 2500 ? "8px" : "11px";  // Smaller font for small boxes
                                     })
-                                    .text(d => d.data.displayName.toUpperCase());
+                                    .text(d => d.data.displayName.toUpperCase());  // Set text to company name
                                 
-                                // Show values only if there's space
+                                // Update ticker/market cap label (only if not Safari)
                                 if (!isSafari){
-                                g.select(".val-label")
-                                    .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
-                                    .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                                    g.select(".val-label")
+                                        .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")  // Hide if box too short
+                                        .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
                                 }
                             }))
                     );
                 
-                // Apply tooltip handlers to ALL rectangles (both new and updated)
+                /* --- Apply tooltip handlers to all rectangles --- */
+                // This must be done after join to ensure all rectangles (new and updated) have handlers
                 leaf.select("rect")
-                    .on("mouseover", handleMouseOver)
-                    .on("mousemove", handleMouseMove)
-                    .on("mouseout", handleMouseOut);
+                    .on("mouseover", handleMouseOver)   // Show tooltip on hover
+                    .on("mousemove", handleMouseMove)   // Update tooltip position on mouse move
+                    .on("mouseout", handleMouseOut);    // Hide tooltip on mouse leave
                 
-                // Update text content for newly entered elements as well
+                /* --- Update text for newly entered elements --- */
+                // Set text content for elements that just appeared
                 leaf.select(".name-label")
                     .style("font-size", d => {
                         const area = (d.x1 - d.x0) * (d.y1 - d.y0);
                         return area < 2500 ? "8px" : "11px";
                     })
                     .text(d => d.data.displayName.toUpperCase());
+                
+                // Set ticker/market cap text (only if not Safari)
                 if (!isSafari){
-                leaf.select(".val-label")
-                    .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
-                    .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                    leaf.select(".val-label")
+                        .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
+                        .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
                 }
                 
-                // Update annotation
+                /* --- Update year annotation --- */
+                // Get annotation text for this year (or default message)
                 const annotation = yearAnnotations[year] || `Market capitalization data for ${year}.`;
+                // Update the annotations div with new content
                 d3.select("#annotations")
                     .html(`<div class="annotation-text"><strong>${year}:</strong> ${annotation}</div>`);
             }
             
-            // Slider Event
+            /* ----- SLIDER EVENT HANDLER ----- */
+            // Listen for changes to the year slider
             d3.select("#yearSlider").on("input", function() {
-                const val = +this.value;
-                d3.select("#yearDisplay").text(val);
-                update(val);
+                const val = +this.value;  // Get slider value as number
+                d3.select("#yearDisplay").text(val);  // Update year display
+                update(val);  // Re-render treemap for selected year
             });
             
-            // Initial render
+            /* ----- INITIAL RENDER ----- */
+            // Render treemap for year 2024 on page load
+            // (Note: This will be wrapped by the company timeline feature below)
+            
+            /* ===== NEW FEATURE: SEARCH FUNCTIONALITY ===== */
+            // Listen for input in search box
+            d3.select("#searchBox").on("input", function() {
+                const query = this.value.trim().toUpperCase();  // Get search query and convert to uppercase
+                
+                if (query === "") {
+                    // If search box is empty, remove all highlights
+                    svg.selectAll("rect")
+                        .classed("search-highlighted", false)
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 1);
+                } else {
+                    // Highlight matching companies
+                    svg.selectAll("rect")
+                        .classed("search-highlighted", d => {
+                            // Check if query matches ticker or company name
+                            const matchesTicker = d.data.ticker.toUpperCase().includes(query);
+                            const matchesCompany = d.data.Company.toUpperCase().includes(query);
+                            const matchesDisplay = d.data.displayName.toUpperCase().includes(query);
+                            return matchesTicker || matchesCompany || matchesDisplay;
+                        })
+                        .attr("stroke", d => {
+                            // Set stroke color based on match
+                            const matches = d.data.ticker.toUpperCase().includes(query) || 
+                                          d.data.Company.toUpperCase().includes(query) ||
+                                          d.data.displayName.toUpperCase().includes(query);
+                            return matches ? "#FFD700" : "#fff";  // Gold for matches, white for others
+                        })
+                        .attr("stroke-width", d => {
+                            // Set stroke width based on match
+                            const matches = d.data.ticker.toUpperCase().includes(query) || 
+                                          d.data.Company.toUpperCase().includes(query) ||
+                                          d.data.displayName.toUpperCase().includes(query);
+                            return matches ? 2 : 1;  // Thicker stroke for matches
+                        });
+                }
+            });
+            
+            /* ===== NEW FEATURE: AUTO-PLAY MODE ===== */
+            let playInterval = null;  // Store interval ID for auto-play
+            let isPlaying = false;     // Track play state
+            
+            // Get reference to play button
+            const playButton = d3.select("#playButton");
+            
+            // Play button click handler
+            playButton.on("click", function() {
+                if (!isPlaying) {
+                    // Start playing
+                    isPlaying = true;
+                    playButton.classed("playing", true).text("⏸ Pause");  // Change to pause button
+                    
+                    // Auto-increment year every 5 seconds
+                    playInterval = setInterval(() => {
+                        let currentYear = +d3.select("#yearSlider").property("value");  // Get current year
+                        
+                        if (currentYear < 2024) {
+                            // Move to next year
+                            currentYear++;
+                            d3.select("#yearSlider").property("value", currentYear);  // Update slider
+                            d3.select("#yearDisplay").text(currentYear);  // Update display
+                            update(currentYear);  // Re-render treemap
+                        } else {
+                            // Reached end, stop playing
+                            stopPlay();
+                        }
+                    }, 5000);  // 5000ms = 5 seconds per year
+                    
+                } else {
+                    // Stop playing
+                    stopPlay();
+                }
+            });
+            
+            // Helper function to stop auto-play
+            function stopPlay() {
+                isPlaying = false;  // Update state
+                playButton.classed("playing", false).text("▶ Play");  // Change to play button
+                if (playInterval) {
+                    clearInterval(playInterval);  // Clear the interval
+                    playInterval = null;
+                }
+            }
+            
+            // Also stop playing when user manually moves the slider
+            d3.select("#yearSlider").on("mousedown touchstart", function() {
+                if (isPlaying) {
+                    stopPlay();  // Stop auto-play if user interacts with slider
+                }
+            });
+            
+            /* ===== NEW FEATURE: COMPANY TIMELINE CHART ===== */
+            // Function to create line chart showing company's market cap over time
+            function createCompanyTimeline(ticker, companyName) {
+                // Filter data for this specific company across all years
+                const companyData = data.filter(d => d.ticker === ticker);
+                
+                // If no data found, don't show chart
+                if (companyData.length === 0) {
+                    return;
+                }
+                
+                // Sort by year
+                companyData.sort((a, b) => a.Year - b.Year);
+                
+                // Show the timeline container
+                d3.select("#timeline-container").classed("visible", true);
+                
+                // Set title
+                d3.select("#timeline-title").text(`${companyName} (${ticker}) - Market Cap Over Time`);
+                
+                // Clear previous chart
+                d3.select("#timeline-chart").html("");
+                
+                // Chart dimensions
+                const margin = {top: 20, right: 30, bottom: 40, left: 80};
+                const chartWidth = 1000 - margin.left - margin.right;
+                const chartHeight = 300 - margin.top - margin.bottom;
+                
+                // Create SVG
+                const timelineSvg = d3.select("#timeline-chart")
+                    .append("svg")
+                    .attr("viewBox", [0, 0, 1000, 300])
+                    .style("width", "100%")
+                    .style("height", "auto");
+                
+                const g = timelineSvg.append("g")
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                // Create scales
+                const xScale = d3.scaleLinear()
+                    .domain(d3.extent(companyData, d => d.Year))
+                    .range([0, chartWidth]);
+                
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(companyData, d => d.MarketCap_BillionsUSD) * 1.1])  // Add 10% padding
+                    .range([chartHeight, 0]);
+                
+                // Add grid lines
+                g.append("g")
+                    .attr("class", "grid")
+                    .selectAll("line")
+                    .data(yScale.ticks(5))
+                    .join("line")
+                    .attr("x1", 0)
+                    .attr("x2", chartWidth)
+                    .attr("y1", d => yScale(d))
+                    .attr("y2", d => yScale(d));
+                
+                // Create line generator
+                const line = d3.line()
+                    .x(d => xScale(d.Year))
+                    .y(d => yScale(d.MarketCap_BillionsUSD))
+                    .curve(d3.curveMonotoneX);  // Smooth curve
+                
+                // Add the line path
+                g.append("path")
+                    .datum(companyData)
+                    .attr("class", "line")
+                    .attr("d", line);
+                
+                // Add dots at each data point
+                g.selectAll(".dot")
+                    .data(companyData)
+                    .join("circle")
+                    .attr("class", "dot")
+                    .attr("cx", d => xScale(d.Year))
+                    .attr("cy", d => yScale(d.MarketCap_BillionsUSD))
+                    .attr("r", 4)
+                    .on("mouseover", function(event, d) {
+                        // Show tooltip on hover
+                        tooltip.transition().duration(200).style("opacity", 1);
+                        tooltip.html(`
+                            <div class="tooltip-title">${d.Year}</div>
+                            <div><strong>Market Cap:</strong> $${d.MarketCap_BillionsUSD}B</div>
+                            <div><strong>Rank:</strong> #${d.Rank}</div>
+                        `)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 10) + "px");
+                        
+                        // Enlarge the dot
+                        d3.select(this).attr("r", 6);
+                    })
+                    .on("mousemove", function(event) {
+                        tooltip
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 10) + "px");
+                    })
+                    .on("mouseout", function() {
+                        tooltip.transition().duration(200).style("opacity", 0);
+                        d3.select(this).attr("r", 4);
+                    })
+                    .on("click", function(event, d) {
+                        // Click on dot to jump to that year
+                        d3.select("#yearSlider").property("value", d.Year);
+                        d3.select("#yearDisplay").text(d.Year);
+                        update(d.Year);
+                    });
+                
+                // Add X axis
+                g.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", `translate(0,${chartHeight})`)
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));  // Integer years
+                
+                // Add Y axis
+                g.append("g")
+                    .attr("class", "axis")
+                    .call(d3.axisLeft(yScale).ticks(5));
+                
+                // Add Y axis label
+                g.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -60)
+                    .attr("x", -chartHeight / 2)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .style("fill", "#666")
+                    .text("Market Cap (Billions USD)");
+                
+                // Add X axis label
+                g.append("text")
+                    .attr("x", chartWidth / 2)
+                    .attr("y", chartHeight + 35)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "12px")
+                    .style("fill", "#666")
+                    .text("Year");
+            }
+            
+            // Add click handler to rectangles to show company timeline
+            // This needs to be added to the leaf selection after it's created
+            // We'll modify the tooltip handler application to also add click handlers
+            const originalUpdateFunction = update;
+            update = function(year) {
+                originalUpdateFunction(year);
+                
+                // After update completes, add click handlers
+                svg.selectAll("rect").on("click", function(event, d) {
+                    // Don't trigger if we're in the middle of a tooltip interaction
+                    if (event.defaultPrevented) return;
+                    
+                    // Create timeline for clicked company
+                    createCompanyTimeline(d.data.ticker, d.data.Company);
+                    
+                    // Scroll to timeline
+                    document.getElementById("timeline-container").scrollIntoView({ 
+                        behavior: "smooth", 
+                        block: "nearest" 
+                    });
+                });
+            };
+            
+            // Re-run initial render with new update function
             update(2024);
         });
     </script>
+
+<!-- Footer with attribution -->
 <div style="text-align: center; padding: 20px; color: #666; font-size: 14px; border-top: 1px solid #e0e0e0; margin-top: 40px;">
   Created for CSE442 Class at the University of Washington by Shreyan Mitra.<br>
+  
+  <!-- NEW FEATURE: Data source attribution links -->
+  <div class="data-attribution">
+    <strong>Data Sources:</strong>
+    <a href="https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data" target="_blank" rel="noopener">Kaggle S&P 500 Dataset</a> |
+    <a href="https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv" target="_blank" rel="noopener">S&P 500 Companies (GitHub)</a> |
+    <a href="https://observablehq.com/@shreyanmitra/assignment-3" target="_blank" rel="noopener">Observable Notebook</a>
+  </div>
 </div>
 </body>
 </html>
