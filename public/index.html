@@ -1,5 +1,5 @@
 <!-- See https://observablehq.com/d/3cb48db7d2660444 for my thought process.-->
-<!-- Written by Shreyan Mitra for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
+<!-- Written by Shreyan, Bimiyan, and Kalkidan for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,13 +17,17 @@
             color: #333; /* Dark gray text */
         }
         
-        /* ===== CONTROLS SECTION (Year Slider) ===== */
+        /* ===== CONTROLS SECTION (Year Slider) - NOW IN SIDEBAR ===== */
         #controls {
-            background: white; /* White background for contrast */
-            padding: 20px; /* Inner spacing */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow for depth */
-            margin-bottom: 20px; /* Space below controls */
+            /* Removed background and shadow - now part of sidebar-section */
+        }
+        
+        #controls > div {
+            margin-bottom: 12px; /* Space between control elements */
+        }
+        
+        #controls > div:last-child {
+            margin-bottom: 0; /* No margin on last item */
         }
         
         /* ===== LEGEND SECTION (Sector Colors) ===== */
@@ -31,7 +35,7 @@
             display: flex; /* Use flexbox for horizontal layout */
             flex-wrap: wrap; /* Allow items to wrap to next line */
             gap: 12px; /* Space between legend items */
-            margin-bottom: 20px; /* Space below legend */
+            margin-bottom: 15px; /* Space below legend */
         }
         
         /* Individual legend item (color box + label) */
@@ -90,18 +94,52 @@
         
         /* ===== YEAR SLIDER STYLING ===== */
         input[type=range] {
-            width: 400px; /* Fixed width for slider */
+            width: 100%; /* Full width of sidebar */
             cursor: pointer; /* Show pointer cursor on hover */
         }
         
         /* ===== MAIN CONTAINER ===== */
         .diagram-container {
-            max-width: 1100px; /* Limit maximum width */
+            max-width: 1400px; /* Increased width to accommodate sidebar */
             margin: 40px auto; /* Center horizontally with top/bottom margin */
             background: #fff; /* White background */
             border-radius: 16px; /* Rounded corners */
             box-shadow: 0 12px 32px rgba(0,0,0,0.12); /* Large shadow for depth */
             padding: 36px 32px 32px 32px; /* Inner spacing (top, right, bottom, left) */
+        }
+        
+        /* ===== NEW: LAYOUT FLEX CONTAINER ===== */
+        .main-layout {
+            display: flex; /* Horizontal layout */
+            gap: 20px; /* Space between main content and sidebar */
+            align-items: flex-start; /* Align items to top */
+        }
+        
+        .main-content {
+            flex: 1; /* Take up remaining space */
+            min-width: 0; /* Allow shrinking */
+        }
+        
+        .sidebar {
+            width: 350px; /* Fixed sidebar width */
+            flex-shrink: 0; /* Don't shrink */
+            display: flex; /* Stack items vertically */
+            flex-direction: column; /* Vertical stacking */
+            gap: 20px; /* Space between sidebar items */
+        }
+        
+        .sidebar-section {
+            background: white; /* White background */
+            padding: 16px; /* Inner spacing */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+        
+        .sidebar-section-title {
+            font-weight: bold; /* Bold title */
+            font-size: 14px; /* Readable size */
+            margin-bottom: 12px; /* Space below title */
+            color: #333; /* Dark gray */
         }
         
         /* Main title */
@@ -152,12 +190,7 @@
         
         /* ===== YEAR ANNOTATIONS ===== */
         #annotations {
-            background: white; /* White background */
-            padding: 16px 20px; /* Inner spacing */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow */
-            margin-bottom: 20px; /* Space below */
-            min-height: 60px; /* Minimum height to prevent jumping */
+            /* Styling now handled by sidebar-section */
         }
         
         /* Annotation text styling */
@@ -173,8 +206,8 @@
             border: 2px solid #ddd; /* Light border */
             border-radius: 6px; /* Rounded corners */
             font-size: 14px; /* Readable text */
-            width: 250px; /* Fixed width */
-            margin-left: 20px; /* Space from slider */
+            width: 100%; /* Full width of sidebar */
+            box-sizing: border-box; /* Include padding in width */
             transition: border-color 0.3s; /* Smooth border color change */
         }
         
@@ -187,7 +220,7 @@
             color: #999; /* Light gray placeholder text */
         }
         
-        /* ===== PLAY BUTTON ===== */
+        /* ===== NEW FEATURE: PLAY BUTTON ===== */
         #playButton {
             padding: 10px 20px; /* Inner spacing */
             background: #4CAF50; /* Green background */
@@ -197,7 +230,7 @@
             font-size: 14px; /* Readable text */
             font-weight: bold; /* Bold text */
             cursor: pointer; /* Pointer cursor */
-            margin-left: 20px; /* Space from search box */
+            width: 100%; /* Full width of sidebar */
             transition: background 0.3s; /* Smooth color transition */
         }
         
@@ -213,7 +246,7 @@
             background: #da190b; /* Darker red on hover */
         }
         
-        /* ===== SEARCH HIGHLIGHT PULSE ANIMATION ===== */
+        /* ===== NEW FEATURE: SEARCH HIGHLIGHT PULSE ANIMATION ===== */
         @keyframes pulse {
             0%, 100% { 
                 stroke-width: 2px; /* Normal width */
@@ -230,7 +263,7 @@
             stroke: #FFD700 !important; /* Gold stroke */
         }
         
-        /* ===== DATA ATTRIBUTION LINKS ===== */
+        /* ===== NEW FEATURE: DATA ATTRIBUTION LINKS ===== */
         .data-attribution {
             margin-top: 10px; /* Space above */
             font-size: 12px; /* Smaller text */
@@ -248,14 +281,15 @@
             text-decoration: underline; /* Underline on hover */
         }
         
-        /* ===== COMPANY TIMELINE CHART ===== */
+        /* ===== NEW FEATURE: COMPANY TIMELINE CHART ===== */
         #timeline-container {
-            background: white; /* White background */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Shadow for elevation */
-            padding: 20px; /* Inner spacing */
-            margin-top: 20px; /* Space above */
+            /* Styling now handled by sidebar-section */
             display: none; /* Hidden by default */
+            position: relative; /* For absolute positioning of close button */
+        }
+        
+        #timeline-container.visible {
+            display: block; /* Show when company is selected */
         }
         
         #timeline-container.visible {
@@ -263,18 +297,22 @@
         }
         
         .timeline-title {
-            font-size: 1.3em; /* Large title */
+            font-size: 1em; /* Smaller title for sidebar */
             font-weight: bold; /* Bold text */
             color: #222; /* Dark text */
-            margin-bottom: 15px; /* Space below */
+            margin-bottom: 10px; /* Space below */
+            margin-top: 5px; /* Space for close button */
             text-align: center; /* Center align */
+            padding-right: 20px; /* Space for close button */
         }
         
         .timeline-close {
-            float: right; /* Position on right */
+            position: absolute; /* Position absolutely */
+            right: 10px; /* Position from right */
+            top: 10px; /* Position from top */
             cursor: pointer; /* Pointer cursor */
             color: #999; /* Gray color */
-            font-size: 1.5em; /* Large X */
+            font-size: 1.3em; /* Slightly smaller for sidebar */
             font-weight: bold; /* Bold */
             line-height: 1; /* Tight spacing */
             transition: color 0.3s; /* Smooth color change */
@@ -290,6 +328,14 @@
             stroke-width: 3px; /* Thick line */
         }
         
+        /* Gap lines connect non-consecutive years (company was out of top 20) */
+        #timeline-chart .gap-line {
+            stroke: #4CAF50; /* Green line (same color) */
+            stroke-width: 2px; /* Slightly thinner for gaps */
+            opacity: 0.3; /* Lower opacity to indicate discontinuity */
+            stroke-dasharray: 4,4; /* Dashed pattern for gaps */
+        }
+        
         #timeline-chart .dot {
             fill: #4CAF50; /* Green dots */
             stroke: white; /* White border */
@@ -303,7 +349,7 @@
         }
         
         #timeline-chart .axis {
-            font-size: 11px; /* Small axis text */
+            font-size: 9px; /* Smaller axis text for sidebar */
         }
         
         #timeline-chart .grid line {
@@ -318,37 +364,59 @@
         <!-- Title -->
         <h1 class="diagram-title">Market Cap Treemap (1989-2024)</h1>
         <!-- Subtitle with instructions -->
-        <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company. Use the slider to time travel through years.</p>
+        <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company.</p>
         
-        <!-- Year slider control -->
-        <div id="controls">
-            <strong>Time Travel: </strong>
-            <!-- Range slider: min=1989, max=2024, starts at 2024 -->
-            <input type="range" id="yearSlider" min="1989" max="2024" value="2024">
-            <!-- Display currently selected year -->
-            <span id="yearDisplay" style="font-size: 1.5em; font-weight: 800; margin-left: 15px;">2024</span>
+        <!-- New flex layout: Main content + Sidebar -->
+        <div class="main-layout">
+            <!-- LEFT: Main visualization area -->
+            <div class="main-content">
+                <!-- Legend showing sector colors (populated dynamically by JavaScript) -->
+                <div id="legend"></div>
+                
+                <!-- Treemap chart container (SVG added dynamically by JavaScript) -->
+                <div id="chart-wrapper"><div id="chart"></div></div>
+            </div>
             
-            <!-- FEATURE: Play/Pause button for auto-play mode -->
-            <button id="playButton">▶ Play</button>
-            
-            <!-- FEATURE: Search box to find companies -->
-            <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
-        </div>
-        
-        <!-- Legend showing sector colors (populated dynamically by JavaScript) -->
-        <div id="legend"></div>
-        
-        <!-- Year annotations (populated dynamically by JavaScript) -->
-        <div id="annotations"></div>
-        
-        <!-- Treemap chart container (SVG added dynamically by JavaScript) -->
-        <div id="chart-wrapper"><div id="chart"></div></div>
-        
-        <!-- FEATURE: Company timeline chart (appears when company is clicked) -->
-        <div id="timeline-container">
-            <span class="timeline-close" onclick="document.getElementById('timeline-container').classList.remove('visible')">×</span>
-            <div class="timeline-title" id="timeline-title"></div>
-            <div id="timeline-chart"></div>
+            <!-- RIGHT: Sidebar with controls and details -->
+            <div class="sidebar">
+                <!-- Year slider control -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Time Controls</div>
+                    <div id="controls">
+                        <!-- Year display -->
+                        <div style="text-align: center; font-size: 1.8em; font-weight: 800; margin-bottom: 8px;" id="yearDisplay">2024</div>
+                        
+                        <!-- Range slider -->
+                        <div>
+                            <input type="range" id="yearSlider" min="1989" max="2024" value="2024">
+                        </div>
+                        
+                        <!-- Play/Pause button -->
+                        <div>
+                            <button id="playButton">▶ Play</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search box -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Search Companies</div>
+                    <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
+                </div>
+                
+                <!-- Year annotations -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Year Context</div>
+                    <div id="annotations"></div>
+                </div>
+                
+                <!-- Company timeline (appears on click) -->
+                <div class="sidebar-section" id="timeline-container">
+                    <span class="timeline-close" id="timeline-close-btn">×</span>
+                    <div class="timeline-title" id="timeline-title"></div>
+                    <div id="timeline-chart"></div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -484,6 +552,17 @@
                 item.append("span").text(sector);
             });
             
+            /* ----- CALCULATE SECTOR TOTALS FOR STABLE ORDERING ----- */
+            // Calculate total historical market cap for each sector (for consistent positioning)
+            const sectorTotals = d3.rollup(
+                data,
+                v => d3.sum(v, d => d.MarketCap_BillionsUSD),
+                d => d.sector
+            );
+            const allSectorsOrdered = Array.from(sectorTotals.entries())
+                .sort((a, b) => b[1] - a[1])  // Sort by total historical market cap
+                .map(d => d[0]);
+            
             /* ----- UPDATE FUNCTION (Main visualization logic) ----- */
             // This function renders the treemap for a given year
             function update(year) {
@@ -495,20 +574,27 @@
                 const rolledUp = d3.group(yearData, d => d.sector);
                 
                 /* --- Create hierarchy --- */
-                // Convert grouped data to D3 hierarchy format
+                // Convert grouped data to D3 hierarchy format with stable sector ordering
                 const root = d3.hierarchy({
-                    children: Array.from(rolledUp, ([sector, companies]) => ({
-                        sector: sector,      // Sector name stored at parent level
-                        children: companies  // Array of company objects
-                    }))
+                    children: allSectorsOrdered
+                        .map(sector => ({
+                            sector: sector,
+                            children: rolledUp.get(sector) || []
+                        }))
+                        .filter(d => d.children.length > 0)  // Remove empty sectors for this year
                 })
                 // Set value of each node based on market cap (for sizing)
                 .sum(d => d.MarketCap_BillionsUSD || 0)
-                // Sort nodes by value (largest first)
-                .sort((a, b) => b.value - a.value);
+                // Sort companies within sectors by value, but maintain sector order from above
+                .eachBefore(node => {
+                    if (node.children) {
+                        node.children.sort((a, b) => b.value - a.value);
+                    }
+                });
                 
                 /* --- Apply treemap layout --- */
                 d3.treemap()
+                    .tile(d3.treemapResquarify.ratio(1))  // Use resquarify with ratio for sticky layout (maintains positions better across updates)
                     .size([width, height])     // Set total size
                     .paddingOuter(5)            // Padding around entire treemap
                     .paddingInner(2)            // Padding between rectangles
@@ -579,7 +665,23 @@
                                         .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")  // Hide if box too short
                                         .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
                                 }
-                            }))
+                            })),
+                        
+                        /* EXIT: Elements being removed (companies leaving top 20) */
+                        exit => exit.call(e => e.transition().duration(1000)  // Animate exit over 1 second
+                            .style("opacity", 0)  // Fade out
+                            .attr("transform", d => {
+                                // Fly out to the right and down
+                                const currentTransform = d3.select(e.node()).attr("transform");
+                                const match = currentTransform.match(/translate\(([^,]+),([^)]+)\)/);
+                                if (match) {
+                                    const currentX = parseFloat(match[1]);
+                                    const currentY = parseFloat(match[2]);
+                                    return `translate(${currentX + width},${currentY + height / 2})`;  // Move off-screen to bottom-right
+                                }
+                                return `translate(${width},${height})`;  // Fallback: move to bottom-right corner
+                            })
+                            .remove())  // Remove after transition completes
                     );
                 
                 /* --- Apply tooltip handlers to all rectangles --- */
@@ -613,6 +715,30 @@
                     .html(`<div class="annotation-text"><strong>${year}:</strong> ${annotation}</div>`);
             }
             
+            /* ----- WRAP UPDATE FUNCTION FOR TIMELINE INDICATOR ----- */
+            // Wrap the update function to also update timeline year indicator and add click handlers
+            const originalUpdateFunction = update;
+            update = function(year) {
+                originalUpdateFunction(year);
+                
+                // Update timeline year indicator if timeline is open
+                updateTimelineYearIndicator();
+                
+                // Re-apply search highlighting if there's an active search
+                if (currentSearchQuery) {
+                    applySearchHighlighting(currentSearchQuery);
+                }
+                
+                // After update completes, add click handlers to rectangles
+                svg.selectAll("rect").on("click", function(event, d) {
+                    // Don't trigger if we're in the middle of a tooltip interaction
+                    if (event.defaultPrevented) return;
+                    
+                    // Create timeline for clicked company
+                    createCompanyTimeline(d.data.ticker, d.data.Company);
+                });
+            };
+            
             /* ----- SLIDER EVENT HANDLER ----- */
             // Listen for changes to the year slider
             d3.select("#yearSlider").on("input", function() {
@@ -626,18 +752,20 @@
             // (Note: This will be wrapped by the company timeline feature below)
             
             /* ===== NEW FEATURE: SEARCH FUNCTIONALITY ===== */
-            // Listen for input in search box
-            d3.select("#searchBox").on("input", function() {
-                const query = this.value.trim().toUpperCase();  // Get search query and convert to uppercase
-                
+            // Store current search query
+            let currentSearchQuery = "";
+            
+            // Function to apply search highlighting
+            function applySearchHighlighting(query) {
                 if (query === "") {
-                    // If search box is empty, remove all highlights
+                    // If search box is empty, remove all highlights and restore opacity
                     svg.selectAll("rect")
                         .classed("search-highlighted", false)
                         .attr("stroke", "#fff")
-                        .attr("stroke-width", 1);
+                        .attr("stroke-width", 1)
+                        .style("opacity", 1);  // Restore full opacity
                 } else {
-                    // Highlight matching companies
+                    // Highlight matching companies and dim non-matching ones
                     svg.selectAll("rect")
                         .classed("search-highlighted", d => {
                             // Check if query matches ticker or company name
@@ -659,8 +787,21 @@
                                           d.data.Company.toUpperCase().includes(query) ||
                                           d.data.displayName.toUpperCase().includes(query);
                             return matches ? 2 : 1;  // Thicker stroke for matches
+                        })
+                        .style("opacity", d => {
+                            // Lower opacity for non-matching companies
+                            const matches = d.data.ticker.toUpperCase().includes(query) || 
+                                          d.data.Company.toUpperCase().includes(query) ||
+                                          d.data.displayName.toUpperCase().includes(query);
+                            return matches ? 1 : 0.2;  // Full opacity for matches, 20% for others
                         });
                 }
+            }
+            
+            // Listen for input in search box
+            d3.select("#searchBox").on("input", function() {
+                currentSearchQuery = this.value.trim().toUpperCase();  // Store search query
+                applySearchHighlighting(currentSearchQuery);  // Apply highlighting
             });
             
             /* ===== NEW FEATURE: AUTO-PLAY MODE ===== */
@@ -677,7 +818,7 @@
                     isPlaying = true;
                     playButton.classed("playing", true).text("⏸ Pause");  // Change to pause button
                     
-                    // Auto-increment year every 5 seconds
+                    // Auto-increment year every 2 seconds
                     playInterval = setInterval(() => {
                         let currentYear = +d3.select("#yearSlider").property("value");  // Get current year
                         
@@ -691,7 +832,7 @@
                             // Reached end, stop playing
                             stopPlay();
                         }
-                    }, 5000);  // 5000ms = 5 seconds per year
+                    }, 2000);  // 2000ms = 2 seconds per year
                     
                 } else {
                     // Stop playing
@@ -717,6 +858,58 @@
             });
             
             /* ===== NEW FEATURE: COMPANY TIMELINE CHART ===== */
+            // Store current timeline state
+            let currentTimelineData = null;
+            
+            // Close button handler
+            d3.select("#timeline-close-btn").on("click", function() {
+                d3.select("#timeline-container").style("display", "none");
+                currentTimelineData = null;  // Clear timeline state
+            });
+            
+            // Function to update the current year indicator on timeline
+            function updateTimelineYearIndicator() {
+                if (!currentTimelineData) return;  // No timeline open
+                
+                const currentYear = +d3.select("#yearSlider").property("value");
+                const g = d3.select("#timeline-chart svg g");
+                
+                // Remove old indicator
+                g.selectAll(".current-year-line, .current-year-label").remove();
+                
+                // Check if current year is in range
+                const minYear = d3.min(currentTimelineData.companyData, d => d.Year);
+                const maxYear = d3.max(currentTimelineData.companyData, d => d.Year);
+                
+                if (currentYear >= minYear && currentYear <= maxYear) {
+                    const xScale = currentTimelineData.xScale;
+                    const chartHeight = currentTimelineData.chartHeight;
+                    
+                    // Add vertical line showing current year
+                    g.append("line")
+                        .attr("class", "current-year-line")
+                        .attr("x1", xScale(currentYear))
+                        .attr("x2", xScale(currentYear))
+                        .attr("y1", 0)
+                        .attr("y2", chartHeight)
+                        .attr("stroke", "#FF6B6B")  // Red color for visibility
+                        .attr("stroke-width", 2)
+                        .attr("stroke-dasharray", "5,5")  // Dashed line
+                        .style("pointer-events", "none");  // Don't interfere with interactions
+                    
+                    // Add label for current year line
+                    g.append("text")
+                        .attr("class", "current-year-label")
+                        .attr("x", xScale(currentYear))
+                        .attr("y", -5)
+                        .attr("text-anchor", "middle")
+                        .style("font-size", "9px")  // Smaller font for sidebar
+                        .style("font-weight", "bold")
+                        .style("fill", "#FF6B6B")
+                        .text(`${currentYear}`);
+                }
+            }
+            
             // Function to create line chart showing company's market cap over time
             function createCompanyTimeline(ticker, companyName) {
                 // Filter data for this specific company across all years
@@ -731,23 +924,23 @@
                 companyData.sort((a, b) => a.Year - b.Year);
                 
                 // Show the timeline container
-                d3.select("#timeline-container").classed("visible", true);
+                d3.select("#timeline-container").style("display", "block");
                 
-                // Set title
-                d3.select("#timeline-title").text(`${companyName} (${ticker}) - Market Cap Over Time`);
+                // Set title (more compact for sidebar)
+                d3.select("#timeline-title").text(`${companyName} (${ticker})`);
                 
                 // Clear previous chart
                 d3.select("#timeline-chart").html("");
                 
-                // Chart dimensions
-                const margin = {top: 20, right: 30, bottom: 40, left: 80};
-                const chartWidth = 1000 - margin.left - margin.right;
-                const chartHeight = 300 - margin.top - margin.bottom;
+                // Chart dimensions (adjusted for sidebar width)
+                const margin = {top: 20, right: 10, bottom: 40, left: 60};
+                const chartWidth = 350 - margin.left - margin.right;  // Sidebar width minus margins
+                const chartHeight = 250 - margin.top - margin.bottom;  // Shorter height for sidebar
                 
                 // Create SVG
                 const timelineSvg = d3.select("#timeline-chart")
                     .append("svg")
-                    .attr("viewBox", [0, 0, 1000, 300])
+                    .attr("viewBox", [0, 0, 350, 250])  // Adjusted viewBox for sidebar
                     .style("width", "100%")
                     .style("height", "auto");
                 
@@ -763,6 +956,15 @@
                     .domain([0, d3.max(companyData, d => d.MarketCap_BillionsUSD) * 1.1])  // Add 10% padding
                     .range([chartHeight, 0]);
                 
+                // Store timeline state for updates
+                currentTimelineData = {
+                    companyData: companyData,
+                    xScale: xScale,
+                    yScale: yScale,
+                    chartHeight: chartHeight,
+                    chartWidth: chartWidth
+                };
+                
                 // Add grid lines
                 g.append("g")
                     .attr("class", "grid")
@@ -774,17 +976,40 @@
                     .attr("y1", d => yScale(d))
                     .attr("y2", d => yScale(d));
                 
-                // Create line generator
+                // Create line generator for continuous segments (consecutive years)
                 const line = d3.line()
                     .x(d => xScale(d.Year))
                     .y(d => yScale(d.MarketCap_BillionsUSD))
                     .curve(d3.curveMonotoneX);  // Smooth curve
                 
-                // Add the line path
-                g.append("path")
-                    .datum(companyData)
-                    .attr("class", "line")
-                    .attr("d", line);
+                // Create line generator for gap segments (non-consecutive years)
+                const gapLine = d3.line()
+                    .x(d => xScale(d.Year))
+                    .y(d => yScale(d.MarketCap_BillionsUSD))
+                    .curve(d3.curveLinear);  // Straight line for gaps (no smoothing)
+                
+                // Draw lines connecting all data points
+                // For consecutive years: solid green line
+                // For gaps (company not in top 20): dashed, semi-transparent line
+                for (let i = 0; i < companyData.length - 1; i++) {
+                    const currentPoint = companyData[i];
+                    const nextPoint = companyData[i + 1];
+                    const yearGap = nextPoint.Year - currentPoint.Year;
+                    
+                    if (yearGap === 1) {
+                        // Consecutive years - draw normal solid line
+                        g.append("path")
+                            .datum([currentPoint, nextPoint])
+                            .attr("class", "line")
+                            .attr("d", line);
+                    } else if (yearGap > 1) {
+                        // Gap in years - draw dashed line with lower opacity (styled via CSS)
+                        g.append("path")
+                            .datum([currentPoint, nextPoint])
+                            .attr("class", "line gap-line")
+                            .attr("d", gapLine);
+                    }
+                }
                 
                 // Add dots at each data point
                 g.selectAll(".dot")
@@ -838,47 +1063,27 @@
                 // Add Y axis label
                 g.append("text")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -60)
+                    .attr("y", -45)  // Adjusted for smaller left margin
                     .attr("x", -chartHeight / 2)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "12px")
+                    .style("font-size", "10px")  // Smaller font for sidebar
                     .style("fill", "#666")
-                    .text("Market Cap (Billions USD)");
+                    .text("Market Cap ($B)");
                 
                 // Add X axis label
                 g.append("text")
                     .attr("x", chartWidth / 2)
                     .attr("y", chartHeight + 35)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "12px")
+                    .style("font-size", "10px")  // Smaller font for sidebar
                     .style("fill", "#666")
                     .text("Year");
+                
+                // Add current year indicator
+                updateTimelineYearIndicator();
             }
             
-            // Add click handler to rectangles to show company timeline
-            // This needs to be added to the leaf selection after it's created
-            // We'll modify the tooltip handler application to also add click handlers
-            const originalUpdateFunction = update;
-            update = function(year) {
-                originalUpdateFunction(year);
-                
-                // After update completes, add click handlers
-                svg.selectAll("rect").on("click", function(event, d) {
-                    // Don't trigger if we're in the middle of a tooltip interaction
-                    if (event.defaultPrevented) return;
-                    
-                    // Create timeline for clicked company
-                    createCompanyTimeline(d.data.ticker, d.data.Company);
-                    
-                    // Scroll to timeline
-                    document.getElementById("timeline-container").scrollIntoView({ 
-                        behavior: "smooth", 
-                        block: "nearest" 
-                    });
-                });
-            };
-            
-            // Re-run initial render with new update function
+            // Initial render
             update(2024);
         });
     </script>
