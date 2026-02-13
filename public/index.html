@@ -97,11 +97,11 @@
         /* Box that sits inside body and includes everything except for the footer*/
         .diagram-container {
             max-width: 1120px; /* Increased width to accommodate sidebar */
-            margin: 20px auto; /* Center horizontally with top/bottom margin */
+            margin: 8px auto; /* Center horizontally with top/bottom margin */
             background: #fff; /* White background */
             border-radius: 12.8px; /* Rounded corners */
             box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Large shadow for depth */
-            padding: 8px 16px 8px 16px; /* Inner spacing (top, right, bottom, left) */
+            padding: 4px 8px 4px 8px; /* Inner spacing (top, right, bottom, left) */
         }
         
         /* Defines the arrangement of the main pane and the sidebar */
@@ -592,9 +592,10 @@
                     .join(
                         /* ENTER: New elements (companies appearing for first time) */
                         enter => {
-                            // Create group element for each company
+                            // Create group element for each company, starting off-screen to the left
                             const g = enter.append("g")
-                                .attr("transform", d => `translate(${d.x0},${d.y0})`);  // Position at top-left corner
+                                .attr("transform", d => `translate(${d.x0 - width},${d.y0})`)  // Start off-screen left
+                                .style("opacity", 0);  // Start invisible
                             
                             // Add colored rectangle
                             g.append("rect")
@@ -617,6 +618,11 @@
                             if (!isSafari){
                                 div.append("div").attr("class", "val-label");
                             }
+                            
+                            // Animate flying in from the left
+                            g.transition().duration(1000)  // Animate over 1 second
+                                .attr("transform", d => `translate(${d.x0},${d.y0})`)  // Move to final position
+                                .style("opacity", 1);  // Fade in
                             
                             return g;  // Return the group element
                         },
