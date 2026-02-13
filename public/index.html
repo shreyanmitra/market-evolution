@@ -142,6 +142,7 @@
         .diagram-title {
             font-size: 2em; /* Large font size */
             font-weight: 900; /* Extra bold */
+            margin-top: 28px; /* Space above title */
             margin-bottom: 8px; /* Space below title */
             color: #222; /* Almost black */
             letter-spacing: 0.02em; /* Slight letter spacing */
@@ -152,7 +153,7 @@
         .diagram-subtitle {
             font-size: 1.1em; /* Slightly larger than body text */
             color: #555; /* Medium gray */
-            margin-bottom: 28px; /* Space below subtitle */
+            margin-bottom: 0; /* No space below at bottom of page */
             text-align: center; /* Center align */
         }
         
@@ -349,11 +350,6 @@
 <body>
     <!-- Main container for entire visualization -->
     <div class="diagram-container">
-        <!-- Title -->
-        <h1 class="diagram-title">Market Cap Treemap (1989-2024)</h1>
-        <!-- Subtitle with instructions -->
-        <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company.</p>
-        
         <!-- New flex layout: Main content + Sidebar -->
         <div class="main-layout">
             <!-- LEFT: Main visualization area -->
@@ -406,6 +402,11 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Title -->
+        <h1 class="diagram-title">Market Cap Treemap (1989-2024)</h1>
+        <!-- Subtitle with instructions -->
+        <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company.</p>
     </div>
     
     <script>
