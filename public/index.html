@@ -11,7 +11,7 @@
         body {
             font-family: -apple-system, system-ui, sans-serif; /* Use system font*/
             margin: 4; /* Change default margin to save space*/
-            padding: 2px; /* Add padding around page edges */
+            padding: 1.6px; /* Add padding around page edges */
             background: #f8f9fa; /* Light gray background */
             color: #333; /* Dark gray text */
         }
@@ -19,7 +19,7 @@
         /* The year slider, year view, and play/pause button are children of the container with id "controls"*/
         
         #controls > div {
-            margin-bottom: 10px; /* Space between control elements */
+            margin-bottom: 8px; /* Space between control elements */
         }
         
         #controls > div:last-child {
@@ -30,37 +30,37 @@
         #legend {
             display: flex; /* Use flexbox for horizontal layout */
             flex-wrap: wrap; /* Allow items to wrap to next line */
-            gap: 12px; /* Space between legend items */
-            margin-bottom: 15px; /* Space below legend (between legend and treemap)*/
+            gap: 9.6px; /* Space between legend items */
+            margin-bottom: 12px; /* Space below legend (between legend and treemap)*/
         }
         
         /* Individual legend item (color box + label) */
         .legend-item {
             display: flex; /* Horizontal layout for box + text */
             align-items: center; /* Vertically center items */
-            font-size: 13px; /* Small readable text */
+            font-size: 10.4px; /* Small readable text */
         }
         
         /* Colored square in legend */
         .legend-box {
-            width: 14px; /* Fixed width */
-            height: 14px; /* Fixed height (square) */
-            margin-right: 6px; /* Space between box and label */
-            border-radius: 3px; /* Slightly rounded corners */
+            width: 11.2px; /* Fixed width */
+            height: 11.2px; /* Fixed height (square) */
+            margin-right: 4.8px; /* Space between box and label */
+            border-radius: 2.4px; /* Slightly rounded corners */
         }
         
         /* Treemap container has id "chart-wrapper" */
         #chart-wrapper {
             background: white; /* White background */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Prominent shadow for elevation */
+            border-radius: 9.6px; /* Rounded corners */
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Prominent shadow for elevation */
             overflow: hidden; /* Clip content to rounded corners */
         }
         
         /* Treemap box labels */
         .container-div {
             color: white; /* White text for visibility on colored backgrounds */
-            padding: 6px; /* Inner spacing */
+            padding: 4.8px; /* Inner spacing */
             height: 100%; /* Fill entire foreignObject height */
             width: 100%; /* Fill entire foreignObject width */
             box-sizing: border-box; /* Include padding in dimensions */
@@ -79,12 +79,12 @@
         .name-label {
             font-weight: bold; /* Make company names bold */
             line-height: 1.1; /* Tight line spacing */
-            margin-bottom: 2px; /* Small space before next line */
+            margin-bottom: 1.6px; /* Small space before next line */
         }
         
         /* Ticker and market cap label (second line) */
         .val-label {
-            font-size: 9px; /* Smaller font for secondary info */
+            font-size: 7.2px; /* Smaller font for secondary info */
             opacity: 0.85; /* Slightly transparent */
         }
         
@@ -96,18 +96,18 @@
         
         /* Box that sits inside body and includes everything except for the footer*/
         .diagram-container {
-            max-width: 1400px; /* Increased width to accommodate sidebar */
-            margin: 10px auto; /* Center horizontally with top/bottom margin */
+            max-width: 1120px; /* Increased width to accommodate sidebar */
+            margin: 20px auto; /* Center horizontally with top/bottom margin */
             background: #fff; /* White background */
-            border-radius: 16px; /* Rounded corners */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12); /* Large shadow for depth */
-            padding: 5px 10px 5px 10px; /* Inner spacing (top, right, bottom, left) */
+            border-radius: 12.8px; /* Rounded corners */
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Large shadow for depth */
+            padding: 8px 16px 8px 16px; /* Inner spacing (top, right, bottom, left) */
         }
         
         /* Defines the arrangement of the main pane and the sidebar */
         .main-layout {
             display: flex; /* Horizontal layout */
-            gap: 20px; /* Space between main content and sidebar */
+            gap: 16px; /* Space between main content and sidebar */
             align-items: flex-start; /* Align items to top */
         }
         
@@ -117,32 +117,32 @@
         }
         
         .sidebar {
-            width: 350px; /* Fixed sidebar width */
+            width: 280px; /* Fixed sidebar width */
             flex-shrink: 0; /* Don't shrink */
             display: flex; /* Stack items vertically */
             flex-direction: column; /* Vertical stacking */
-            gap: 12px; /* Space between sidebar items */
+            gap: 9.6px; /* Space between sidebar items */
         }
         
         .sidebar-section {
             background: white; /* White background */
-            padding: 16px; /* Inner spacing */
-            border-radius: 12px; /* Rounded corners */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Subtle shadow */
+            padding: 12.8px; /* Inner spacing */
+            border-radius: 9.6px; /* Rounded corners */
+            box-shadow: 0 3.2px 4.8px rgba(0,0,0,0.05); /* Subtle shadow */
         }
         
         .sidebar-section-title {
             font-weight: bold; /* Bold title */
-            font-size: 14px; /* Readable size */
-            margin-bottom: 12px; /* Space below title */
+            font-size: 11.2px; /* Readable size */
+            margin-bottom: 9.6px; /* Space below title */
             color: #333; /* Dark gray */
         }
         
         /* Main title */
         .diagram-title {
-            font-size: 2em; /* Large font size */
+            font-size: 1.6em; /* Large font size */
             font-weight: 900; /* Extra bold */
-            margin-bottom: 8px; /* Space below title */
+            margin-bottom: 6.4px; /* Space below title */
             color: #222; /* Almost black */
             letter-spacing: 0.02em; /* Slight letter spacing */
             text-align: center; /* Center align */
@@ -150,33 +150,33 @@
         
         /* Subtitle */
         .diagram-subtitle {
-            font-size: 1.1em; /* Slightly larger than body text */
+            font-size: 0.88em; /* Slightly larger than body text */
             color: #555; /* Medium gray */
-            margin-bottom: 28px; /* Space below subtitle */
+            margin-bottom: 22.4px; /* Space below subtitle */
             text-align: center; /* Center align */
         }
         
         /* Tooltip (this shows when hovering over a rectangle) */
         .tooltip {
             position: absolute; /* Position relative to viewport */
-            padding: 12px; /* Inner spacing */
+            padding: 9.6px; /* Inner spacing */
             background: rgba(0, 0, 0, 0.9); /* Nearly opaque black background */
             color: white; /* White text */
-            border-radius: 8px; /* Rounded corners */
+            border-radius: 6.4px; /* Rounded corners */
             pointer-events: none; /* Don't intercept mouse events */
             opacity: 0; /* Initially hidden */
             transition: opacity 0.2s; /* Smooth fade in/out */
-            font-size: 13px; /* Readable font size */
+            font-size: 10.4px; /* Readable font size */
             line-height: 1.5; /* Comfortable line spacing */
-            max-width: 250px; /* Prevent tooltip from being too wide */
+            max-width: 200px; /* Prevent tooltip from being too wide */
             z-index: 1000; /* Ensure tooltip appears above everything */
         }
         
         /* Tooltip title (company name) */
         .tooltip-title {
             font-weight: bold; /* Bold for emphasis */
-            font-size: 14px; /* Slightly larger */
-            margin-bottom: 6px; /* Space below title */
+            font-size: 11.2px; /* Slightly larger */
+            margin-bottom: 4.8px; /* Space below title */
         }
         
         /* Make rectangles show pointer cursor on hover */
@@ -188,17 +188,17 @@
         
         /* Annotation text styling */
         .annotation-text {
-            font-size: 14px; /* Readable size */
+            font-size: 11.2px; /* Readable size */
             line-height: 1.6; /* Comfortable line spacing */
             color: #444; /* Dark gray */
         }
         
         /* Search box allows users to search for a company or ticker and see it highlighted/focused on the treemap */
         #searchBox {
-            padding: 8px 12px; /* Inner spacing */
+            padding: 6.4px 9.6px; /* Inner spacing */
             border: 2px solid #ddd; /* Light border */
-            border-radius: 6px; /* Rounded corners */
-            font-size: 14px; /* Readable text */
+            border-radius: 4.8px; /* Rounded corners */
+            font-size: 11.2px; /* Readable text */
             width: 100%; /* Full width of sidebar */
             box-sizing: border-box; /* Include padding in width */
             transition: border-color 0.3s; /* Smooth border color change */
@@ -215,12 +215,12 @@
         
         /* Play button to allow users to automatically forward through multiple years */
         #playButton {
-            padding: 10px 20px; /* Inner spacing */
+            padding: 8px 16px; /* Inner spacing */
             background: #4CAF50; /* Green background */
             color: white; /* White text */
             border: none; /* No border */
-            border-radius: 6px; /* Rounded corners */
-            font-size: 14px; /* Readable text */
+            border-radius: 4.8px; /* Rounded corners */
+            font-size: 11.2px; /* Readable text */
             font-weight: bold; /* Bold text */
             cursor: pointer; /* Pointer cursor */
             width: 100%; /* Full width of sidebar */
@@ -242,11 +242,11 @@
         /* Search highlight pulse animation - search results have highlighted yellow borders that pulse. This is to get the user's attention and make it easier for them to see the search results. */
         @keyframes pulse {
             0%, 100% { 
-                stroke-width: 2px; /* Normal width */
+                stroke-width: 1.6px; /* Normal width */
                 stroke: #FFD700; /* Gold color */
             }
             50% { 
-                stroke-width: 6px; /* Thicker stroke */
+                stroke-width: 4.8px; /* Thicker stroke */
                 stroke: #FFA500; /* Orange color */
             }
         }
@@ -258,14 +258,14 @@
         
         /* Daa attribution links for the footer */
         .data-attribution {
-            margin-top: 10px; /* Space above */
-            font-size: 12px; /* Smaller text */
+            margin-top: 8px; /* Space above */
+            font-size: 9.6px; /* Smaller text */
         }
         
         .data-attribution a {
             color: #4CAF50; /* Green links */
             text-decoration: none; /* No underline */
-            margin: 0 8px; /* Space between links */
+            margin: 0 6.4px; /* Space between links */
             transition: color 0.3s; /* Smooth color change */
         }
         
@@ -285,22 +285,22 @@
         }
         
         .timeline-title {
-            font-size: 1em; /* Smaller title for sidebar */
+            font-size: 0.8em; /* Smaller title for sidebar */
             font-weight: bold; /* Bold text */
             color: #222; /* Dark text */
-            margin-bottom: 10px; /* Space below */
-            margin-top: 5px; /* Space for close button */
+            margin-bottom: 8px; /* Space below */
+            margin-top: 4px; /* Space for close button */
             text-align: center; /* Center align */
-            padding-right: 20px; /* Space for close button */
+            padding-right: 16px; /* Space for close button */
         }
         
         .timeline-close {
             position: absolute; /* Position absolutely */
-            right: 10px; /* Position from right */
-            top: 10px; /* Position from top */
+            right: 8px; /* Position from right */
+            top: 8px; /* Position from top */
             cursor: pointer; /* Pointer cursor */
             color: #999; /* Gray color */
-            font-size: 1.3em; /* Slightly smaller for sidebar */
+            font-size: 1.04em; /* Slightly smaller for sidebar */
             font-weight: bold; /* Bold */
             line-height: 1; /* Tight spacing */
             transition: color 0.3s; /* Smooth color change */
@@ -313,21 +313,21 @@
         #timeline-chart .line {
             fill: none; /* No fill for line */
             stroke: #4CAF50; /* Green line */
-            stroke-width: 3px; /* Thick line */
+            stroke-width: 2.4px; /* Thick line */
         }
         
         /* Gap lines connect non-consecutive years (company was out of top 20) */
         #timeline-chart .gap-line {
             stroke: #4CAF50; /* Green line (same color) */
-            stroke-width: 2px; /* Slightly thinner for gaps */
+            stroke-width: 1.6px; /* Slightly thinner for gaps */
             opacity: 0.3; /* Lower opacity to indicate discontinuity */
-            stroke-dasharray: 4,4; /* Dashed pattern for gaps */
+            stroke-dasharray: 3.2,3.2; /* Dashed pattern for gaps */
         }
         
         #timeline-chart .dot {
             fill: #4CAF50; /* Green dots */
             stroke: white; /* White border */
-            stroke-width: 2px; /* Border width */
+            stroke-width: 1.6px; /* Border width */
             cursor: pointer; /* Pointer cursor */
         }
         
@@ -337,12 +337,12 @@
         }
         
         #timeline-chart .axis {
-            font-size: 9px; /* Smaller axis text for sidebar */
+            font-size: 7.2px; /* Smaller axis text for sidebar */
         }
         
         #timeline-chart .grid line {
             stroke: #e0e0e0; /* Light gray grid lines */
-            stroke-dasharray: 2,2; /* Dashed lines */
+            stroke-dasharray: 1.6,1.6; /* Dashed lines */
         }
     </style>
 </head>
@@ -372,7 +372,7 @@
                     <div class="sidebar-section-title">Time Controls</div>
                     <div id="controls">
                         <!-- Year display -->
-                        <div style="text-align: center; font-size: 1.8em; font-weight: 800; margin-bottom: 8px;" id="yearDisplay">2024</div>
+                        <div style="text-align: center; font-size: 1.44em; font-weight: 800; margin-bottom: 6.4px;" id="yearDisplay">2024</div>
                         
                         <!-- Range slider -->
                         <div>
@@ -410,8 +410,8 @@
     
     <script>
         /* Configuration Constants */
-        const width = 1000;  // SVG width in pixels
-        const height = 667;  // SVG height in pixels (roughly 3:2 aspect ratio)
+        const width = 800;  // SVG width in pixels
+        const height = 534;  // SVG height in pixels (roughly 3:2 aspect ratio)
 
         // Browser Detection:
         // Detect Safari browser because it has bugs with foreignObject + flexbox, so we need to address it specifically
@@ -639,14 +639,14 @@
                                 g.select(".name-label")
                                     .style("font-size", d => {
                                         const area = (d.x1 - d.x0) * (d.y1 - d.y0);  // Calculate box area
-                                        return area < 2500 ? "8px" : "11px";  // Smaller font for small boxes
+                                        return area < 1600 ? "6.4px" : "8.8px";  // Smaller font for small boxes
                                     })
                                     .text(d => d.data.displayName.toUpperCase());  // Set text to company name
                                 
                                 // Update ticker/market cap label (only if not Safari)
                                 if (!isSafari){
                                     g.select(".val-label")
-                                        .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")  // Hide if box too short
+                                        .style("display", d => (d.y1 - d.y0) < 28 ? "none" : "block")  // Hide if box too short
                                         .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
                                 }
                             })),
@@ -679,14 +679,14 @@
                 leaf.select(".name-label")
                     .style("font-size", d => {
                         const area = (d.x1 - d.x0) * (d.y1 - d.y0);
-                        return area < 2500 ? "8px" : "11px";
+                        return area < 1600 ? "6.4px" : "8.8px";
                     })
                     .text(d => d.data.displayName.toUpperCase());
                 
                 // Set ticker/market cap text (only if not Safari)
                 if (!isSafari){
                     leaf.select(".val-label")
-                        .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block")
+                        .style("display", d => (d.y1 - d.y0) < 28 ? "none" : "block")
                         .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
                 }
                 
@@ -871,17 +871,17 @@
                         .attr("y1", 0)
                         .attr("y2", chartHeight)
                         .attr("stroke", "#FF6B6B")  // Red color for visibility
-                        .attr("stroke-width", 2)
-                        .attr("stroke-dasharray", "5,5")  // Dashed line
+                        .attr("stroke-width", 1.6)
+                        .attr("stroke-dasharray", "4,4")  // Dashed line
                         .style("pointer-events", "none");  // Don't interfere with interactions
                     
                     // Add label for current year line
                     g.append("text")
                         .attr("class", "current-year-label")
                         .attr("x", xScale(currentYear))
-                        .attr("y", -5)
+                        .attr("y", -4)
                         .attr("text-anchor", "middle")
-                        .style("font-size", "9px")  // Smaller font for sidebar
+                        .style("font-size", "7.2px")  // Smaller font for sidebar
                         .style("font-weight", "bold")
                         .style("fill", "#FF6B6B")
                         .text(`${currentYear}`);
@@ -911,14 +911,14 @@
                 d3.select("#timeline-chart").html("");
                 
                 // Chart dimensions (adjusted for sidebar width)
-                const margin = {top: 20, right: 10, bottom: 40, left: 60};
-                const chartWidth = 350 - margin.left - margin.right;  // Sidebar width minus margins
-                const chartHeight = 250 - margin.top - margin.bottom;  // Shorter height for sidebar
+                const margin = {top: 16, right: 8, bottom: 32, left: 48};
+                const chartWidth = 280 - margin.left - margin.right;  // Sidebar width minus margins
+                const chartHeight = 200 - margin.top - margin.bottom;  // Shorter height for sidebar
                 
                 // Create SVG
                 const timelineSvg = d3.select("#timeline-chart")
                     .append("svg")
-                    .attr("viewBox", [0, 0, 350, 250])  // Adjusted viewBox for sidebar
+                    .attr("viewBox", [0, 0, 280, 200])  // Adjusted viewBox for sidebar
                     .style("width", "100%")
                     .style("height", "auto");
                 
@@ -996,7 +996,7 @@
                     .attr("class", "dot")
                     .attr("cx", d => xScale(d.Year))
                     .attr("cy", d => yScale(d.MarketCap_BillionsUSD))
-                    .attr("r", 4)
+                    .attr("r", 3.2)
                     .on("mouseover", function(event, d) {
                         // Show tooltip on hover
                         tooltip.transition().duration(200).style("opacity", 1);
@@ -1009,7 +1009,7 @@
                         .style("top", (event.pageY - 10) + "px");
                         
                         // Enlarge the dot
-                        d3.select(this).attr("r", 6);
+                        d3.select(this).attr("r", 4.8);
                     })
                     .on("mousemove", function(event) {
                         tooltip
@@ -1018,9 +1018,13 @@
                     })
                     .on("mouseout", function() {
                         tooltip.transition().duration(200).style("opacity", 0);
-                        d3.select(this).attr("r", 4);
+                        d3.select(this).attr("r", 3.2);
                     })
                     .on("click", function(event, d) {
+                        // Stop playing if auto-play is active
+                        if (isPlaying) {
+                            stopPlay();
+                        }
                         // Click on dot to jump to that year
                         d3.select("#yearSlider").property("value", d.Year);
                         d3.select("#yearDisplay").text(d.Year);
@@ -1041,19 +1045,19 @@
                 // Add Y axis label
                 g.append("text")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -45)  // Adjusted for smaller left margin
+                    .attr("y", -36)  // Adjusted for smaller left margin
                     .attr("x", -chartHeight / 2)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "10px")  // Smaller font for sidebar
+                    .style("font-size", "8px")  // Smaller font for sidebar
                     .style("fill", "#666")
                     .text("Market Cap ($B)");
                 
                 // Add X axis label
                 g.append("text")
                     .attr("x", chartWidth / 2)
-                    .attr("y", chartHeight + 35)
+                    .attr("y", chartHeight + 28)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "10px")  // Smaller font for sidebar
+                    .style("font-size", "8px")  // Smaller font for sidebar
                     .style("fill", "#666")
                     .text("Year");
                 
@@ -1067,7 +1071,7 @@
     </script>
 
 <!-- Footer with attribution -->
-<div style="text-align: center; padding: 20px; color: #666; font-size: 14px; border-top: 1px solid #e0e0e0; margin-top: 40px;">
+<div style="text-align: center; padding: 16px; color: #666; font-size: 11.2px; border-top: 1px solid #e0e0e0; margin-top: 32px;">
   Created for CSE442 Class at the University of Washington by Shreyan Mitra.<br>
   
   <!-- Data source attribution links -->
