@@ -552,6 +552,9 @@
             
             // This function renders the treemap for a given year
             function update(year) {
+
+                // Interrupt any ongoing transitions before starting new ones
+                svg.selectAll("g").interrupt();
                 
                 /* --- Filter and group data --- */
                 // Get only data for the selected year
