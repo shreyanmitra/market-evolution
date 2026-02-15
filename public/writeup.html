@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>A3-Writeup.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="introduction">Introduction</h2>
+<p>Nvidia. Apple. Google. Microsoft. Amazon. Walmart. These companies are the &quot;rockstars&quot; of the modern era. Everyone knows the name of these behemoths - they are so large and influential they almost seem invincible. But today's giants were yesterday's startups and yesterday's giants may no longer exist.</p>
+<p>In this visualization, we explore the evolution of American giants over time. Specifically we ask two primary research questions: (1) For a specific time, what are the largest companies by S&amp;P 500 market cap valuation? and (2) For a specific company, how does its market cap valuation change over time? To answer these questions, we use dual-view coordination.</p>
+<p>Now, let's dive into the visual design decisions we made. For more information about our thought process please visit the following Observable Notebook: https://observablehq.com/d/3cb48db7d2660444</p>
+<h2 id="design-decisions">Design Decisions</h2>
+<ol>
+<li>
+<p>For temporal snapshots, we chose a squarified tree map which visualizes the top 20 companies by market capitalization at any given year. Market capitalization is encoded by the area of the rectangles, while the hierarchical grouping of companies into sectors is encoded through position (companies belonging to the same sector are placed closely together) and color (companies belonging to the same sector are shaded with the same color, given by the legend). Alternatives we considered include grouped bar charts (length is easier to compare than area) but this was deemed too space inefficient as compared to a tree map. A tree map is also better at showing proportions of a whole compared to a regular bar chart. Pie/donut charts were rejected for a similar reason - it is difficult to compare 20 different angular slices. Finally, we also considered sunburst diagrams, but again radial area comparison is harder than rectangular area comparison and the sunburst format is unfamiliar to most viewers. Our tree map utilizes D3's built-in re-squarify algorithm as well as pre-computation of historical sector caps to ensure that companies' shapes are as close to being squares as possible and that they tend to stay in the same place (&quot;sticky&quot;) from one temporal point to another. Tis allows users to read the labels more clearly and keep track of company's trajectories more easily.</p>
+<p>First, let's dive into the coloring choices. The colors for the sectors were chosen using the Tableau 10 Color Palette, which are 10 distinct, color blind accessible pallettes. As mentioned before, each color represents a different sector, making sector differences easier to spot. This also helps see trends over time (such as rise of tech, fall of energy). Coloring by market cap was rejected (obscures sector data). Coloring by company was also rejected (too many colors).</p>
+<p>Now, more about the area sectors. These use a linear scale to make differences between companies more obvious. So if a company has a 3x larger market cap valuation than another company, it's area would be 3x larger. An inner padding (2px) helps to separate companies while outer padding (5px) helps frame the visualization.</p>
+<p>Let's explore the text hierarchy inside the rectangles. The text color is white to contrast with the darker colors of the rectangle. The company name is bold and uppercase so that it immediately catches the eyes of the viewer. Below that, the company ticker and valuation is shown in lighter, smaller font. This is hidden if the rectangle is too small or on Safari (because of known problems with Safari and foreign object which causes the text to become distorted). Dynamic thresholds mean that the font sizes automatically adjust to the area of the rectangle.</p>
+<p>Finally, the tooltips. When the user hovers over a rectangle, a small tooltip fades in with black background and white text providing more information about the specific company. Tooltips allows the user to learn more information while keeping the interface uncluttered. Tooltips fade out when the user moves the cursor away and they follow the cursor around to keep the user's attention.</p>
+</li>
+<li>
+<p>We use a line chart to show company timelines. Line charts are the familiar convention for time series data such as market cap evolution because it emphasizes continuity, something which bar charts don't do. Area charts would not be a good choice here because they are usually associated with accumulation, not year-by-year values. The line chart is green to make it stand out on the white, gridded background below. Data points are indicated with a circled dot for easy identification. The axes are clearly labeled to help the user calculate exact numbers. For years in which the company was not in the top 20 of the S&amp;P 500, and therefore no data exists, the connecting line at that year has much lower opacity. This is to prevent misleading the viewers and making them interpolate market caps for years where that data is unavailable. The line of best fit is a monotone X curve to make the curves appear smooth and not disjointed. The user can hover over a dot to learn more about the exact year and market cap, reducing the cognitive load of actually reading the graph's axes and calculating values. We chose for the line graph to only depict one company at a time to reduce cluuter and axes scale mismatch. The close buton allows the user to remove the company line chart if they so wish.</p>
+</li>
+<li>
+<p>Multi-view Strategy: The treemap provides comparative snapshots (what is the state of the market at a given year?) while lines reveal temporal patterns (how has the market cap for a specific company evolved over time). This supports both big-picture and more subtle explorations. There is cross-filtering between the graphs. So, if I click a company in the tree map, its corresponding time series line graph shows up. If I click a data point for a specific year in the company time series line graph, the treemap snapshot for that year shows up. The current year is indicated by a dashed vertical red line on the time series line graph so users can very easily contextualize the data they are seeing.</p>
+<p>The tree map covers a majority of the space and has a 3:2 aspect ratio. This is the main attraction and what should get the viewer's attention immediately. The line graph only appears if a company is selected, and is much smaller. The line graph is positioned and sized so that even though further inspection is needed to get exact data values, the overall trend is visible with just a cursory glance.</p>
+<p>In fact, the line graph is just a portion of the sidebar. The sidebar also contains a slider for the user to manually change the time indicated by the red line in the company-specific graph and by the treemap. This is more visually intuitive in indicating temporal continuity (slider's positional changes equals changes in time) compared to alternatives like a dropdown. On top of the slider, the year is written in large dark bold letters so the user always knows the exact year. Each year has a specific netural annotation to give the user larger context as to what was going on in the world at the specific time that might affect the data shown and also summarize the data to help the user draw conclusions and make decisions.</p>
+<p>The entire view is sized so that it can fit in a single page without requiring the viewer to scroll. The SVG viewBox provides responsive scaling while maintaining proportions.</p>
+<p>Below, the slider is a PLay/Pause button that allows the user to see changes over time without manually moving the slider - creating a movie of sorts. This is again meant to reduce the work needed from the user's end. The time between individual treemap snapshots was chosen to be 2 seconds (not too large as to cause the user to wonder if the animation was broken but also long enough for the user to engage with the data for a specific year).</p>
+<p>Finally, the sidebar contains a search box that allows users to search for a specific company on the provided tree map by ticker or company name. The company, if it exists in the treemap will b e given a yellow, pulsing border with all other rectangles on the treemap being dimmed to draw the user's eyes even more towards the searched company. If the time slider changes after a search, this highlighting effect remains until the search is cleared. This enables user exploration by allowing users to more easily track a specific company's rectangle over time.</p>
+<p>The sidebar collapses on smaller viewports.</p>
+</li>
+<li>
+<p>Animation is one of the key ways we show changes over time on the treemap. The purpose of smooth transitions with key binding on company ticker is to maintain object constancy over time (making the treemap &quot;sticky&quot; is also useful here). As companies' market caps rise and fall over time, their corresponding rectangles grow and shrink. However, if a company exits the top 20 or enters the top 20, we do not want to give the viewer the false impression that the company is either going out of business (shrinking to nothing) or just &quot;popped&quot; into the scene (growing out of nothing), rather we make companies fly in from the left or fly out to the right, indicating that they may still exist but are just entering and exiting the top 20.</p>
+<p>If a company changes its position on the treemap (which we try to prevent but sometimes happens nonetheless to maintain the treemap's shape) the movement is animated as well to help users' eyes track that company. For readability, text labels on the rectangles also resize to fit the changes in size of their enclosing rectangle.</p>
+</li>
+<li>
+<p>Supporting Elements: The title and subtitle clearly indicate the research question and are positioned at the top of the page. The legend helps users map color to sector and are clearly visible above the tree map as well. The compact horizontal orientation of the legend helps preserve vertical space. The footer contains data attribution links in case the viewer is interested in learning more about the data shown.</p>
+<p>In designing this visualization, we kept in mind the principle of progressive disclosure. Big picture details are always visible, and more minute details are visible upon the user's request. A tradeoff was also made between analytical power and accessibility - extra information that we thought might be helpful was moved to the tooltips instead of kept on the rectangles to prevent clutter.</p>
+</li>
+</ol>
+<h2 id="external-data-sources">External Data Sources</h2>
+<p>The tree map is a common visualization technique used for ordered, hierarchical data. See this link for more information about treemaps: https://www.cs.umd.edu/hcil/treemap/</p>
+<p>We used the following Kaggle dataset for information about top 20 S&amp;P500 companies' market caps from 1989 to 2024: https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data</p>
+<p>In the process of cleaning up the above dataset, we found the following CSV file helpful in mapping tickers to actual company names: https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv</p>
+<h2 id="process">Process</h2>
+<p>Our software development lifecycle (SDLC) was rapid prototyping. We felt that this was the best option for a small project like this one. We repeatedly iterated on the code and saw how the visualization looked. We then altered the code to change something we didn't like, and the process repeated until we were satisfied. The initial visualization design for the treemap was done by Bimiyan, with the idea of the sidebar with specific company line graphs provided by Shreyan. Kalkidan helped procure the correct datasets for the task. The visualizations themselves were programmed by Bimiyan and Shreyan, with Kalkidan providing feedback from the user perspective. Kalkidan then summarized the design decisions included in this write-up.</p>
+<p>We spent approximately 5 hours creating the first prototype. From there on, it was roughly one week of iteration and improvements. We also visited the professor during office hours, and he gave us a lot of good feedback as well (such as removing the need for the user to scroll and making the treemap &quot;sticky&quot; among other things).</p>
+<p>The aspect that took the most time was the programming of the cross-filtering between the treemap, time slider, and the company line graph. We ran into a lot of bugs whereby clocking a specific year on the line graph would not update the treemap and the slider, or moving the time slider while a search filter was active on the treemap caused empty spaces and incorrect dimming. We fixed this by trial and error, and by writing minimal working examples to narrow down the cause of the issues.</p>
+
+</body>
+</html>
