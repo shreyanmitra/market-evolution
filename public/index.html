@@ -731,12 +731,27 @@
             
             // Listen for changes to the year slider
             d3.select("#yearSlider").on("input", function() {
-                const val = +this.value;  // Get slider value as number
-                d3.select("#yearDisplay").text(val);  // Update year display
-                update(val);  // Re-render treemap for selected year
+            const val = +this.value;  // Get slider value as number
+            d3.select("#yearDisplay").text(val);  // Update year display immediately
+    
+            // Clear any pending update
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+    
+            // Schedule update after user stops dragging (1000ms of no input)
+            updateTimeout = setTimeout(() => {
+                if (val !== currentDisplayedYear) {
+                    currentDisplayedYear = val;
+                    update(val);
+                }
+            }, 1000); // Wait 1 second after last input
             });
             
             // Render treemap for year 2024 on page load
+
+            let updateTimeout = null;
+            let currentDisplayedYear = 2024;
             
             /* Search functionality */
             // Store current search query
