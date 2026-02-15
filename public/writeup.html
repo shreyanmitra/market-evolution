@@ -368,7 +368,7 @@ code {
 <h2 id="introduction">Introduction</h2>
 <p>Nvidia. Apple. Google. Microsoft. Amazon. Walmart. These companies are the &quot;rockstars&quot; of the modern era. Everyone knows the name of these behemoths - they are so large and influential they almost seem invincible. But today's giants were yesterday's startups and yesterday's giants may no longer exist.</p>
 <p>In this visualization, we explore the evolution of American giants over time. Specifically we ask two primary research questions: (1) For a specific time, what are the largest companies by S&amp;P 500 market cap valuation? and (2) For a specific company, how does its market cap valuation change over time? To answer these questions, we use dual-view coordination.</p>
-<p>Now, let's dive into the visual design decisions we made. For more information about our thought process please visit the following Observable Notebook: >a>https://observablehq.com/d/3cb48db7d2660444</a></p>
+<p>Now, let's dive into the visual design decisions we made. For more information about our thought process please visit the following Observable Notebook: <a href="https://observablehq.com/d/3cb48db7d2660444">https://observablehq.com/d/3cb48db7d2660444</a></p>
 <h2 id="design-decisions">Design Decisions</h2>
 <ol>
 <li>
@@ -400,9 +400,9 @@ code {
 </li>
 </ol>
 <h2 id="external-data-sources">External Data Sources</h2>
-<p>The tree map is a common visualization technique used for ordered, hierarchical data. See this link for more information about treemaps: <a>https://www.cs.umd.edu/hcil/treemap/</a></p>
-<p>We used the following Kaggle dataset for information about top 20 S&amp;P500 companies' market caps from 1989 to 2024: <a>https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data</a></p>
-<p>In the process of cleaning up the above dataset, we found the following CSV file helpful in mapping tickers to actual company names: <a>https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv</a></p>
+<p>The tree map is a common visualization technique used for ordered, hierarchical data. See this link for more information about treemaps: <a href="https://www.cs.umd.edu/hcil/treemap/">https://www.cs.umd.edu/hcil/treemap/</a></p>
+<p>We used the following Kaggle dataset for information about top 20 S&amp;P500 companies' market caps from 1989 to 2024: <a href="https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data">https://www.kaggle.com/datasets/juanmerinobermejo/s-and-p-500-top-20-companies-by-market-cap-from-1989/data</a></p>
+<p>In the process of cleaning up the above dataset, we found the following CSV file helpful in mapping tickers to actual company names: <a href="https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv">https://github.com/datasets/s-and-p-500-companies/blob/main/data/constituents.csv</a></p>
 <h2 id="process">Process</h2>
 <p>Our software development lifecycle (SDLC) was rapid prototyping. We felt that this was the best option for a small project like this one. We repeatedly iterated on the code and saw how the visualization looked. We then altered the code to change something we didn't like, and the process repeated until we were satisfied. The initial visualization design for the treemap was done by Bimiyan, with the idea of the sidebar with specific company line graphs provided by Shreyan. Kalkidan helped procure the correct datasets for the task. The visualizations themselves were programmed by Bimiyan and Shreyan, with Kalkidan providing feedback from the user perspective. Kalkidan then summarized the design decisions included in this write-up.</p>
 <p>We spent approximately 5 hours creating the first prototype. From there on, it was roughly one week of iteration and improvements. We also visited the professor during office hours, and he gave us a lot of good feedback as well (such as removing the need for the user to scroll and making the treemap &quot;sticky&quot; among other things).</p>
