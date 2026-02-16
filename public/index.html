@@ -1,5 +1,5 @@
 <!-- See https://observablehq.com/d/3cb48db7d2660444 for my thought process.-->
-<!-- Written by Shreyan, Bimiyan, and Kalkidan for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
+<!-- Written by Shreyan, Biniyam, and Kalkidan for CSE 442. AI was used for proofreading D3 syntax and converting Observable JS to Vanilla JS for this file, with each component reviewed by a human.-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +8,19 @@
     <!-- Load D3.js library version 7 from CDN -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: -apple-system, system-ui, sans-serif; /* Use system font*/
-            margin: 4; /* Change default margin to save space*/
-            padding: 1.6px; /* Add padding around page edges */
-            background: #f8f9fa; /* Light gray background */
-            color: #333; /* Dark gray text */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", sans-serif; /* Use system font*/
+            margin: 0; /* Remove default margin */
+            padding: 20px; /* Add padding around page edges */
+            background: #fafbfc;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%); /* Light gray background with gradient */
+            color: #1a1a1a; /* Dark gray text */
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         /* The year slider, year view, and play/pause button are children of the container with id "controls"*/
@@ -30,37 +37,56 @@
         #legend {
             display: flex; /* Use flexbox for horizontal layout */
             flex-wrap: wrap; /* Allow items to wrap to next line */
-            gap: 9.6px; /* Space between legend items */
-            margin-bottom: 12px; /* Space below legend (between legend and treemap)*/
+            gap: 10px; /* Space between legend items */
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+            width: 100%;
+            align-items: center;
         }
         
         /* Individual legend item (color box + label) */
         .legend-item {
             display: flex; /* Horizontal layout for box + text */
             align-items: center; /* Vertically center items */
-            font-size: 10.4px; /* Small readable text */
+            font-size: 13px; /* Small readable text */
+            padding: 6px 12px;
+            background: #ffffff;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .legend-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.08);
         }
         
         /* Colored square in legend */
         .legend-box {
-            width: 11.2px; /* Fixed width */
-            height: 11.2px; /* Fixed height (square) */
-            margin-right: 4.8px; /* Space between box and label */
-            border-radius: 2.4px; /* Slightly rounded corners */
+            width: 14px; /* Fixed width */
+            height: 14px; /* Fixed height (square) */
+            margin-right: 8px; /* Space between box and label */
+            border-radius: 3px; /* Slightly rounded corners */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         /* Treemap container has id "chart-wrapper" */
         #chart-wrapper {
             background: white; /* White background */
-            border-radius: 9.6px; /* Rounded corners */
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Prominent shadow for elevation */
+            border-radius: 20px; /* Rounded corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Prominent shadow for elevation */
             overflow: hidden; /* Clip content to rounded corners */
+            border: 1px solid rgba(0, 0, 0, 0.06);
         }
         
         /* Treemap box labels */
         .container-div {
             color: white; /* White text for visibility on colored backgrounds */
-            padding: 4.8px; /* Inner spacing */
+            padding: 6px; /* Inner spacing */
             height: 100%; /* Fill entire foreignObject height */
             width: 100%; /* Fill entire foreignObject width */
             box-sizing: border-box; /* Include padding in dimensions */
@@ -79,29 +105,105 @@
         .name-label {
             font-weight: bold; /* Make company names bold */
             line-height: 1.1; /* Tight line spacing */
-            margin-bottom: 1.6px; /* Small space before next line */
+            margin-bottom: 2px; /* Small space before next line */
         }
         
         /* Ticker and market cap label (second line) */
         .val-label {
-            font-size: 7.2px; /* Smaller font for secondary info */
+            font-size: 9px; /* Smaller font for secondary info */
             opacity: 0.85; /* Slightly transparent */
         }
         
         /* Year slider */
-        input[type=range] {
+        input[type="range"] {
             width: 100%; /* Full width of sidebar */
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
             cursor: pointer; /* Show pointer cursor on hover */
+            -webkit-appearance: none;
+            appearance: none;
+            transition: all 0.2s ease;
+        }
+        input[type="range"]:hover {
+            background: #d1d5db;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #06b6d4;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(6, 182, 212, 0.3);
+            transition: all 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+            border-color: #0891b2;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #06b6d4;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(6, 182, 212, 0.3);
+        }
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type="range"]::-moz-range-track {
+            background: #e5e7eb;
+            height: 6px;
+            border-radius: 3px;
         }
         
         /* Box that sits inside body and includes everything except for the footer*/
         .diagram-container {
-            max-width: 1120px; /* Increased width to accommodate sidebar */
-            margin: 8px auto; /* Center horizontally with top/bottom margin */
+            max-width: 1400px; /* Increased width to accommodate sidebar */
+            margin: 20px auto; /* Center horizontally with top/bottom margin */
             background: #fff; /* White background */
-            border-radius: 12.8px; /* Rounded corners */
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Large shadow for depth */
-            padding: 4px 8px 4px 8px; /* Inner spacing (top, right, bottom, left) */
+            border-radius: 24px; /* Rounded corners */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06); /* Large shadow for depth */
+            padding: 32px; /* Inner spacing (top, right, bottom, left) */
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Top controls (Legend + Search) */
+        .top-controls {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 16px;
+        }
+        .top-controls-left {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+        }
+        .top-controls-right {
+            width: 350px;
+            flex-shrink: 0;
+            display: flex;
+        }
+        .top-controls-right .sidebar-section {
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: none;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            width: 100%;
+        }
+        .top-controls-right .sidebar-section:hover {
+            box-shadow: none;
+            border-color: rgba(0, 0, 0, 0.06);
         }
         
         /* Defines the arrangement of the main pane and the sidebar */
@@ -117,66 +219,94 @@
         }
         
         .sidebar {
-            width: 280px; /* Fixed sidebar width */
+            width: 350px; /* Fixed sidebar width */
             flex-shrink: 0; /* Don't shrink */
             display: flex; /* Stack items vertically */
             flex-direction: column; /* Vertical stacking */
-            gap: 9.6px; /* Space between sidebar items */
+            gap: 16px; /* Space between sidebar items */
         }
-        
+        .bottom-section {
+            margin-top: 16px;
+        }
         .sidebar-section {
             background: white; /* White background */
-            padding: 12.8px; /* Inner spacing */
-            border-radius: 9.6px; /* Rounded corners */
-            box-shadow: 0 3.2px 4.8px rgba(0,0,0,0.05); /* Subtle shadow */
+            padding: 20px; /* Inner spacing */
+            border-radius: 16px; /* Rounded corners */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04); /* Subtle shadow */
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+        .sidebar-section:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 8px 16px rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
         .sidebar-section-title {
-            font-weight: bold; /* Bold title */
-            font-size: 11.2px; /* Readable size */
-            margin-bottom: 9.6px; /* Space below title */
-            color: #333; /* Dark gray */
+            font-weight: 600; /* Bold title */
+            font-size: 13px; /* Readable size */
+            margin-bottom: 12px; /* Space below title */
+            color: #1a1a1a; /* Dark gray */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
         }
         
         /* Main title */
         .diagram-title {
-            font-size: 1.6em; /* Large font size */
-            font-weight: 900; /* Extra bold */
-            margin-bottom: 6.4px; /* Space below title */
-            color: #222; /* Almost black */
-            letter-spacing: 0.02em; /* Slight letter spacing */
+            font-size: 2.75em; /* Large font size */
+            font-weight: 700; /* Extra bold */
+            margin-bottom: 12px; /* Space below title */
+            color: #0a0a0a; /* Almost black */
+            letter-spacing: -0.02em; /* Slight letter spacing */
             text-align: center; /* Center align */
+            line-height: 1.1;
         }
         
         /* Subtitle */
         .diagram-subtitle {
-            font-size: 0.88em; /* Slightly larger than body text */
-            color: #555; /* Medium gray */
-            margin-bottom: 22.4px; /* Space below subtitle */
+            font-size: 1.05em; /* Slightly larger than body text */
+            color: #6b7280; /* Medium gray */
+            margin-bottom: 20px; /* Space below subtitle */
             text-align: center; /* Center align */
+            font-weight: 400;
         }
         
         /* Tooltip (this shows when hovering over a rectangle) */
         .tooltip {
             position: absolute; /* Position relative to viewport */
-            padding: 9.6px; /* Inner spacing */
-            background: rgba(0, 0, 0, 0.9); /* Nearly opaque black background */
-            color: white; /* White text */
-            border-radius: 6.4px; /* Rounded corners */
+            padding: 16px 18px; /* Inner spacing */
+            background: rgba(255, 255, 255, 0.85); /* Glassy white background */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            color: #1a1a1a; /* Dark text */
+            border-radius: 16px; /* Rounded corners */
             pointer-events: none; /* Don't intercept mouse events */
             opacity: 0; /* Initially hidden */
-            transition: opacity 0.2s; /* Smooth fade in/out */
-            font-size: 10.4px; /* Readable font size */
-            line-height: 1.5; /* Comfortable line spacing */
-            max-width: 200px; /* Prevent tooltip from being too wide */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade in/out */
+            font-size: 13px; /* Readable font size */
+            line-height: 1.6; /* Comfortable line spacing */
+            max-width: 280px; /* Prevent tooltip from being too wide */
             z-index: 1000; /* Ensure tooltip appears above everything */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         
         /* Tooltip title (company name) */
         .tooltip-title {
-            font-weight: bold; /* Bold for emphasis */
-            font-size: 11.2px; /* Slightly larger */
-            margin-bottom: 4.8px; /* Space below title */
+            font-weight: 600; /* Bold for emphasis */
+            font-size: 14px; /* Slightly larger */
+            margin-bottom: 10px; /* Space below title */
+            color: #0a0a0a;
+        }
+        .tooltip div {
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .tooltip div:last-child {
+            margin-bottom: 0;
+        }
+        .tooltip strong {
+            color: #1a1a1a;
+            font-weight: 600;
         }
         
         /* Make rectangles show pointer cursor on hover */
@@ -188,89 +318,151 @@
         
         /* Annotation text styling */
         .annotation-text {
-            font-size: 11.2px; /* Readable size */
-            line-height: 1.6; /* Comfortable line spacing */
-            color: #444; /* Dark gray */
+            font-size: 14px; /* Readable size */
+            line-height: 1.7; /* Comfortable line spacing */
+            color: #4b5563; /* Dark gray */
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border-left: 3px solid #06b6d4;
         }
         
         /* Search box allows users to search for a company or ticker and see it highlighted/focused on the treemap */
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .search-icon::before {
+            content: "⌕";
+        }
         #searchBox {
-            padding: 6.4px 9.6px; /* Inner spacing */
-            border: 2px solid #ddd; /* Light border */
-            border-radius: 4.8px; /* Rounded corners */
-            font-size: 11.2px; /* Readable text */
+            padding: 12px 16px 12px 42px; /* Inner spacing */
+            border: 1.5px solid #e5e7eb; /* Light border */
+            border-radius: 12px; /* Rounded corners */
+            font-size: 14px; /* Readable text */
             width: 100%; /* Full width of sidebar */
             box-sizing: border-box; /* Include padding in width */
-            transition: border-color 0.3s; /* Smooth border color change */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth border color change */
+            background: #fff;
+            color: #1a1a1a;
         }
         
         #searchBox:focus {
             outline: none; /* Remove default outline */
-            border-color: #4CAF50; /* Green border when focused */
+            border-color: #06b6d4; /* Cyan border when focused */
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        .search-container:focus-within .search-icon {
+            color: #06b6d4;
         }
         
         #searchBox::placeholder {
-            color: #999; /* Light gray placeholder text */
+            color: #9ca3af; /* Light gray placeholder text */
         }
         
         /* Play button to allow users to automatically forward through multiple years */
         #playButton {
-            padding: 8px 16px; /* Inner spacing */
-            background: #4CAF50; /* Green background */
+            padding: 14px 24px; /* Inner spacing */
+            background: #14b8a6; /* Teal background */
             color: white; /* White text */
             border: none; /* No border */
-            border-radius: 4.8px; /* Rounded corners */
-            font-size: 11.2px; /* Readable text */
-            font-weight: bold; /* Bold text */
+            border-radius: 12px; /* Rounded corners */
+            font-size: 14px; /* Readable text */
+            font-weight: 600; /* Bold text */
             cursor: pointer; /* Pointer cursor */
             width: 100%; /* Full width of sidebar */
-            transition: background 0.3s; /* Smooth color transition */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth color transition */
+            box-shadow: 0 1px 2px rgba(20, 184, 166, 0.2), 0 4px 8px rgba(20, 184, 166, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        #playButton::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        #playButton:hover::before {
+            left: 100%;
         }
         
         #playButton:hover {
-            background: #45a049; /* Darker green on hover */
+            background: #0d9488; /* Darker teal on hover */
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(20, 184, 166, 0.25), 0 6px 12px rgba(20, 184, 166, 0.2);
         }
         
         #playButton.playing {
-            background: #f44336; /* Red when playing */
+            background: #f87171; /* Red when playing */
+            box-shadow: 0 1px 2px rgba(248, 113, 113, 0.2), 0 4px 8px rgba(248, 113, 113, 0.15);
         }
         
         #playButton.playing:hover {
-            background: #da190b; /* Darker red on hover */
+            background: #ef4444; /* Darker red on hover */
+            box-shadow: 0 2px 4px rgba(248, 113, 113, 0.25), 0 6px 12px rgba(248, 113, 113, 0.2);
         }
         
         /* Search highlight pulse animation - search results have highlighted yellow borders that pulse. This is to get the user's attention and make it easier for them to see the search results. */
         @keyframes pulse {
-            0%, 100% { 
-                stroke-width: 1.6px; /* Normal width */
-                stroke: #FFD700; /* Gold color */
+            0%, 100% {
+                stroke-width: 2.5px;
+                stroke: #06b6d4;
+                filter: drop-shadow(0 0 3px rgba(6, 182, 212, 0.4));
             }
-            50% { 
-                stroke-width: 4.8px; /* Thicker stroke */
-                stroke: #FFA500; /* Orange color */
+            50% {
+                stroke-width: 4px;
+                stroke: #0891b2;
+                filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.6));
+            }
+        }
+        @keyframes sectorShine {
+            0%, 100% {
+                filter: brightness(1.1) drop-shadow(0 0 4px rgba(6, 182, 212, 0.4));
+            }
+            50% {
+                filter: brightness(1.2) drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
             }
         }
         
         .search-highlighted {
             animation: pulse 1.5s infinite; /* Continuous pulsing */
-            stroke: #FFD700 !important; /* Gold stroke */
+            stroke: #06b6d4 !important; /* Cyan stroke */
+            stroke-width: 2.5px !important;
+        }
+        .sector-highlighted {
+            animation: sectorShine 1.5s infinite;
+            stroke-width: 2.5px !important;
         }
         
         /* Daa attribution links for the footer */
         .data-attribution {
-            margin-top: 8px; /* Space above */
-            font-size: 9.6px; /* Smaller text */
+            margin-top: 10px; /* Space above */
+            font-size: 12px; /* Smaller text */
         }
         
         .data-attribution a {
-            color: #4CAF50; /* Green links */
+            color: #06b6d4; /* Cyan links */
             text-decoration: none; /* No underline */
-            margin: 0 6.4px; /* Space between links */
-            transition: color 0.3s; /* Smooth color change */
+            margin: 0 8px; /* Space between links */
+            transition: color 0.2s ease; /* Smooth color change */
+            font-weight: 500;
         }
         
         .data-attribution a:hover {
-            color: #45a049; /* Darker green on hover */
+            color: #0891b2; /* Darker cyan on hover */
             text-decoration: underline; /* Underline on hover */
         }
         
@@ -285,64 +477,72 @@
         }
         
         .timeline-title {
-            font-size: 0.8em; /* Smaller title for sidebar */
-            font-weight: bold; /* Bold text */
-            color: #222; /* Dark text */
-            margin-bottom: 8px; /* Space below */
-            margin-top: 4px; /* Space for close button */
-            text-align: center; /* Center align */
-            padding-right: 16px; /* Space for close button */
+            font-size: 1em; /* Font size */
+            font-weight: 600; /* Bold font weight */
+            color: #1a1a1a; /* Black color */
+            margin-bottom: 12px; /* Bottom margin */
+            margin-top: 5px; /* Top margin */
+            text-align: center; /* Center text */
+            padding-right: 20px; /* Right padding */
         }
         
         .timeline-close {
             position: absolute; /* Position absolutely */
-            right: 8px; /* Position from right */
-            top: 8px; /* Position from top */
+            right: 12px; /* Position from right */
+            top: 12px; /* Position from top */
             cursor: pointer; /* Pointer cursor */
-            color: #999; /* Gray color */
-            font-size: 1.04em; /* Slightly smaller for sidebar */
-            font-weight: bold; /* Bold */
-            line-height: 1; /* Tight spacing */
-            transition: color 0.3s; /* Smooth color change */
+            color: #9ca3af; /* Gray color */
+            font-size: 1.4em; /* Larger font size */
+            line-height: 1; /* Line height */
+            transition: color 0.2s ease; /* Smooth color transition */
+            width: 24px; /* Width */
+            height: 24px; /* Height */
+            display: flex; /* Use flexbox for layout */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+            border-radius: 6px; /* Rounded corners */
         }
         
         .timeline-close:hover {
-            color: #333; /* Darker on hover */
+            color: #1a1a1a;
+            background: #f3f4f6;
         }
         
         #timeline-chart .line {
             fill: none; /* No fill for line */
-            stroke: #4CAF50; /* Green line */
-            stroke-width: 2.4px; /* Thick line */
+            stroke: #06b6d4; /* Cyan line */
+            stroke-width: 2.5px; /* Thick line */
         }
         
         /* Gap lines connect non-consecutive years (company was out of top 20) */
         #timeline-chart .gap-line {
-            stroke: #4CAF50; /* Green line (same color) */
-            stroke-width: 1.6px; /* Slightly thinner for gaps */
+            stroke: #06b6d4; /* Cyan line (same color) */
+            stroke-width: 2px; /* Slightly thinner for gaps */
             opacity: 0.3; /* Lower opacity to indicate discontinuity */
-            stroke-dasharray: 3.2,3.2; /* Dashed pattern for gaps */
+            stroke-dasharray: 4, 4; /* Dashed pattern for gaps */
         }
         
         #timeline-chart .dot {
-            fill: #4CAF50; /* Green dots */
+            fill: #06b6d4; /* Cyan dots */
             stroke: white; /* White border */
-            stroke-width: 1.6px; /* Border width */
+            stroke-width: 2px; /* Border width */
             cursor: pointer; /* Pointer cursor */
+            transition: all 0.2s ease;
         }
         
         #timeline-chart .dot:hover {
-            fill: #45a049; /* Darker green on hover */
-            r: 6; /* Larger on hover */
+            fill: #0891b2; /* Darker cyan on hover */
+            stroke-width: 2.5px;
         }
         
         #timeline-chart .axis {
-            font-size: 7.2px; /* Smaller axis text for sidebar */
+            font-size: 10px; /* Smaller axis text for sidebar */
+            color: #6b7280;
         }
         
         #timeline-chart .grid line {
-            stroke: #e0e0e0; /* Light gray grid lines */
-            stroke-dasharray: 1.6,1.6; /* Dashed lines */
+            stroke: #e5e7eb; /* Light gray grid lines */
+            stroke-dasharray: 2, 2; /* Dashed lines */
         }
     </style>
 </head>
@@ -354,13 +554,26 @@
         <!-- Subtitle with instructions -->
         <p class="diagram-subtitle">Explore the evolution of market capitalization by sector and company. <a href="writeup.html">Writeup</a></p>
         
-        <!-- New flex layout: Main content + Sidebar -->
+        <!-- Top: Legend + Search side by side -->
+        <div class="top-controls">
+            <div class="top-controls-left">
+                <div id="legend"></div>
+            </div>
+            <div class="top-controls-right">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Search Companies</div>
+                    <div class="search-container">
+                        <span class="search-icon"></span>
+                        <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main: Treemap + Time Controls sidebar -->
         <div class="main-layout">
             <!-- LEFT: Main visualization area -->
             <div class="main-content">
-                <!-- Legend showing sector colors (populated dynamically by JavaScript) -->
-                <div id="legend"></div>
-                
                 <!-- Treemap chart container (SVG added dynamically by JavaScript) -->
                 <div id="chart-wrapper"><div id="chart"></div></div>
             </div>
@@ -372,10 +585,14 @@
                     <div class="sidebar-section-title">Time Controls</div>
                     <div id="controls">
                         <!-- Year display -->
-                        <div style="text-align: center; font-size: 1.44em; font-weight: 800; margin-bottom: 6.4px;" id="yearDisplay">2024</div>
+                        <div style="text-align: center; font-size: 2.25em; font-weight: 700; margin-bottom: 16px; color: #06b6d4; letter-spacing: -0.02em;" id="yearDisplay">2024</div>
                         
-                        <!-- Range slider -->
-                        <div>
+                        <!-- Range slider with year labels -->
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; margin-bottom: 8px; font-weight: 500;">
+                            <span>1989</span>
+                            <span>2024</span>
+                        </div>
+                        <div style="margin-bottom: 16px">
                             <input type="range" id="yearSlider" min="1989" max="2024" value="2024">
                         </div>
                         
@@ -386,32 +603,28 @@
                     </div>
                 </div>
                 
-                <!-- Search box -->
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">Search Companies</div>
-                    <input type="text" id="searchBox" placeholder="Search company or ticker (e.g., AAPL, Tesla)">
-                </div>
-                
                 <!-- Year annotations -->
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">Year Context</div>
                     <div id="annotations"></div>
                 </div>
-                
-                <!-- Company timeline (appears on click) -->
-                <div class="sidebar-section" id="timeline-container">
-                    <span class="timeline-close" id="timeline-close-btn">×</span>
-                    <div class="timeline-title" id="timeline-title"></div>
-                    <div id="timeline-chart"></div>
-                </div>
+            </div>
+        </div>
+        
+        <!-- Company timeline (appears on click) -->
+        <div class="bottom-section">
+            <div class="sidebar-section" id="timeline-container">
+                <span class="timeline-close" id="timeline-close-btn">×</span>
+                <div class="timeline-title" id="timeline-title"></div>
+                <div id="timeline-chart"></div>
             </div>
         </div>
     </div>
     
     <script>
         /* Configuration Constants */
-        const width = 800;  // SVG width in pixels
-        const height = 534;  // SVG height in pixels (roughly 3:2 aspect ratio)
+        const width = 1000;  // SVG width in pixels
+        const height = 667;  // SVG height in pixels (roughly 3:2 aspect ratio)
 
         // Browser Detection:
         // Detect Safari browser because it has bugs with foreignObject + flexbox, so we need to address it specifically
@@ -477,6 +690,15 @@
             return ticker;
         }
         
+        // Function to format market cap (T for trillions, B for billions)
+        function formatMarketCap(billions) {
+            if (billions >= 1000) {
+                const trillions = billions / 1000;
+                return trillions % 1 === 0 ? trillions + "T" : trillions.toFixed(1) + "T";
+            }
+            return billions % 1 === 0 ? billions + "B" : billions.toFixed(1) + "B";
+        }
+        
         // Called when mouse enters a rectangle
         function handleMouseOver(event, d) {
             // Fade in tooltip over 200ms
@@ -486,15 +708,18 @@
                 <div class="tooltip-title">${d.data.Company}</div>
                 <div><strong>Ticker:</strong> ${d.data.ticker}</div>
                 <div><strong>Sector:</strong> ${d.parent.data.sector}</div>
-                <div><strong>Market Cap:</strong> $${d.data.MarketCap_BillionsUSD}B</div>
+                <div><strong>Market Cap:</strong> $${formatMarketCap(d.data.MarketCap_BillionsUSD)}</div>
                 <div><strong>Rank:</strong> #${d.data.Rank}</div>
             `)
             // Position tooltip 10px to right and 10px above mouse cursor
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 10) + "px");
             
-            // Highlight the rectangle with black border
-            d3.select(event.currentTarget).attr("stroke", "#000").attr("stroke-width", 2);
+            // Highlight the rectangle with cyan border
+            d3.select(event.currentTarget)
+                .attr("stroke", "#06b6d4")
+                .attr("stroke-width", 2.5)
+                .style("filter", "brightness(1.05) drop-shadow(0 2px 4px rgba(6, 182, 212, 0.3))");
         }
         
         // Called when mouse moves over a rectangle
@@ -510,7 +735,10 @@
             // Fade out tooltip over 200ms
             tooltip.transition().duration(200).style("opacity", 0);
             // Restore rectangle's original white border
-            d3.select(event.currentTarget).attr("stroke", "#fff").attr("stroke-width", 1);
+            d3.select(event.currentTarget)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1)
+                .style("filter", "none");
         }
         
         // Load CSV file asynchronously and create visualization
@@ -530,6 +758,28 @@
             
             // Select the legend div
             const legend = d3.select("#legend");
+            let currentHoveredSector = null;
+            
+            // Function to apply sector highlighting
+            function applySectorHighlighting(sector) {
+                if (!sector) {
+                    svg.selectAll("rect")
+                        .classed("sector-highlighted", false)
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 1)
+                        .style("opacity", 1)
+                        .style("filter", "none");
+                    if (currentSearchQuery) applySearchHighlighting(currentSearchQuery);
+                } else {
+                    svg.selectAll("rect")
+                        .classed("sector-highlighted", d => d.parent.data.sector === sector)
+                        .attr("stroke", d => d.parent.data.sector === sector ? "#06b6d4" : "#fff")
+                        .attr("stroke-width", d => d.parent.data.sector === sector ? 2.5 : 1)
+                        .style("opacity", d => d.parent.data.sector === sector ? 1 : 0.1)
+                        .style("filter", d => d.parent.data.sector === sector ? "brightness(1.1) drop-shadow(0 0 4px rgba(6, 182, 212, 0.4))" : "none");
+                }
+            }
+            
             // For each sector in the color scale's domain, create a legend item
             color.domain().forEach(sector => {
                 // Create container div for this legend item
@@ -538,6 +788,15 @@
                 item.append("div").attr("class", "legend-box").style("background", color(sector));
                 // Add sector label text
                 item.append("span").text(sector);
+                // Add event handlers for mouse enter and leave
+                item.on("mouseenter", function() {
+                    currentHoveredSector = sector;
+                    applySectorHighlighting(sector);
+                })
+                .on("mouseleave", function() {
+                    currentHoveredSector = null;
+                    applySectorHighlighting(null);
+                });
             });
             
             // Calculate total historical market cap for each sector (for consistent positioning)
@@ -582,7 +841,7 @@
                 
                 /* --- Apply treemap layout --- */
                 d3.treemap()
-                    .tile(d3.treemapResquarify.ratio(1))  // Use resquarify with ratio for sticky layout
+                    .tile(d3.treemapResquarify.ratio(1.618))  // Golden ratio for sector stability
                     .size([width, height])     // Set total size
                     .paddingOuter(5)            // Padding around entire treemap
                     .paddingInner(2)            // Padding between rectangles
@@ -595,10 +854,9 @@
                     .join(
                         /* ENTER: New elements (companies appearing for first time) */
                         enter => {
-                            // Create group element for each company, starting off-screen to the left
+                            // Create group element for each company
                             const g = enter.append("g")
-                                .attr("transform", d => `translate(${d.x0 - width},${d.y0})`)  // Start off-screen left
-                                .style("opacity", 0);  // Start invisible
+                                .attr("transform", d => `translate(${d.x0},${d.y0})`);  // Position at top-left corner
                             
                             // Add colored rectangle
                             g.append("rect")
@@ -622,11 +880,6 @@
                                 div.append("div").attr("class", "val-label");
                             }
                             
-                            // Animate flying in from the left
-                            g.transition().duration(1000)  // Animate over 1 second
-                                .attr("transform", d => `translate(${d.x0},${d.y0})`)  // Move to final position
-                                .style("opacity", 1);  // Fade in
-                            
                             return g;  // Return the group element
                         },
                         
@@ -645,18 +898,35 @@
                                     .attr("height", d => Math.max(0, d.y1 - d.y0));
                                 
                                 // Update company name with dynamic font sizing
+                                const boxW = d => d.x1 - d.x0, boxH = d => d.y1 - d.y0;
+                                const boxArea = d => boxW(d) * boxH(d);
+                                const aspectRatio = d => Math.max(boxW(d), boxH(d)) / Math.min(boxW(d), boxH(d));
                                 g.select(".name-label")
                                     .style("font-size", d => {
-                                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);  // Calculate box area
-                                        return area < 1600 ? "6.4px" : "8.8px";  // Smaller font for small boxes
+                                        const a = boxArea(d), w = boxW(d), h = boxH(d), r = aspectRatio(d);
+                                        if (a < 1500 || w < 40 || h < 20 || r > 8) return "0px";
+                                        if (a < 3000) return "9px";
+                                        if (a < 5000) return "10px";
+                                        return "11px";
                                     })
-                                    .text(d => d.data.displayName.toUpperCase());  // Set text to company name
+                                    .style("display", d => {
+                                        const a = boxArea(d), w = boxW(d), h = boxH(d), r = aspectRatio(d);
+                                        return a < 1500 || w < 40 || h < 20 || r > 8 ? "none" : "block";
+                                    })
+                                    .text(d => {
+                                        const w = boxW(d);
+                                        const name = d.data.displayName.toUpperCase();
+                                        return w < 60 && name.length > 8 ? name.substring(0, 8) + "..." : name;
+                                    });
                                 
                                 // Update ticker/market cap label (only if not Safari)
                                 if (!isSafari){
                                     g.select(".val-label")
-                                        .style("display", d => (d.y1 - d.y0) < 28 ? "none" : "block")  // Hide if box too short
-                                        .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                                        .style("display", d => {
+                                            const h = boxH(d), a = boxArea(d), r = aspectRatio(d);
+                                            return h < 30 || a < 2000 || r > 6 ? "none" : "block";
+                                        })
+                                        .text(d => `${d.data.ticker} | $${formatMarketCap(d.data.MarketCap_BillionsUSD)}`);
                                 }
                             })),
                         
@@ -685,18 +955,35 @@
                     .on("mouseout", handleMouseOut);    // Hide tooltip on mouse leave
                 
                 // Set text content for elements that just appeared
+                const getBoxW = d => d.x1 - d.x0, getBoxH = d => d.y1 - d.y0;
+                const getArea = d => getBoxW(d) * getBoxH(d);
+                const getRatio = d => Math.max(getBoxW(d), getBoxH(d)) / Math.min(getBoxW(d), getBoxH(d));
                 leaf.select(".name-label")
                     .style("font-size", d => {
-                        const area = (d.x1 - d.x0) * (d.y1 - d.y0);
-                        return area < 1600 ? "6.4px" : "8.8px";
+                        const a = getArea(d), w = getBoxW(d), h = getBoxH(d), r = getRatio(d);
+                        if (a < 1500 || w < 40 || h < 20 || r > 8) return "0px";
+                        if (a < 3000) return "9px";
+                        if (a < 5000) return "10px";
+                        return "11px";
                     })
-                    .text(d => d.data.displayName.toUpperCase());
+                    .style("display", d => {
+                        const a = getArea(d), w = getBoxW(d), h = getBoxH(d), r = getRatio(d);
+                        return a < 1500 || w < 40 || h < 20 || r > 8 ? "none" : "block";
+                    })
+                    .text(d => {
+                        const w = getBoxW(d);
+                        const name = d.data.displayName.toUpperCase();
+                        return w < 60 && name.length > 8 ? name.substring(0, 8) + "..." : name;
+                    });
                 
                 // Set ticker/market cap text (only if not Safari)
                 if (!isSafari){
                     leaf.select(".val-label")
-                        .style("display", d => (d.y1 - d.y0) < 28 ? "none" : "block")
-                        .text(d => `${d.data.ticker} | $${d.data.MarketCap_BillionsUSD}B`);
+                        .style("display", d => {
+                            const h = getBoxH(d), a = getArea(d), r = getRatio(d);
+                            return h < 30 || a < 2000 || r > 6 ? "none" : "block";
+                        })
+                        .text(d => `${d.data.ticker} | $${formatMarketCap(d.data.MarketCap_BillionsUSD)}`);
                 }
                 
                 // Get annotation text for this year (or default message)
@@ -717,6 +1004,8 @@
                 // Re-apply search highlighting if there's an active search
                 if (currentSearchQuery) {
                     applySearchHighlighting(currentSearchQuery);
+                } else if (currentHoveredSector) {
+                    applySectorHighlighting(currentHoveredSector);
                 }
                 
                 // After update completes, add click handlers to rectangles
@@ -731,27 +1020,10 @@
             
             // Listen for changes to the year slider
             d3.select("#yearSlider").on("input", function() {
-            const val = +this.value;  // Get slider value as number
-            d3.select("#yearDisplay").text(val);  // Update year display immediately
-    
-            // Clear any pending update
-            if (updateTimeout) {
-                clearTimeout(updateTimeout);
-            }
-    
-            // Schedule update after user stops dragging (1000ms of no input)
-            updateTimeout = setTimeout(() => {
-                if (val !== currentDisplayedYear) {
-                    currentDisplayedYear = val;
-                    update(val);
-                }
-            }, 1000); // Wait 1 second after last input
+                const val = +this.value;  // Get slider value as number
+                d3.select("#yearDisplay").text(val);  // Update year display
+                update(val);  // Re-render treemap for selected year
             });
-            
-            // Render treemap for year 2024 on page load
-
-            let updateTimeout = null;
-            let currentDisplayedYear = 2024;
             
             /* Search functionality */
             // Store current search query
@@ -759,44 +1031,26 @@
             
             // Function to apply search highlighting
             function applySearchHighlighting(query) {
+                const isMatch = d => d.data.ticker.toUpperCase().includes(query) || 
+                                    d.data.Company.toUpperCase().includes(query) ||
+                                    d.data.displayName.toUpperCase().includes(query);
                 if (query === "") {
-                    // If search box is empty, remove all highlights and restore opacity
                     svg.selectAll("rect")
                         .classed("search-highlighted", false)
                         .attr("stroke", "#fff")
                         .attr("stroke-width", 1)
-                        .style("opacity", 1);  // Restore full opacity
+                        .style("opacity", 1)
+                        .style("filter", "none");
+                    if (currentHoveredSector) applySectorHighlighting(currentHoveredSector);
                 } else {
-                    // Highlight matching companies and dim non-matching ones
+                    currentHoveredSector = null;
                     svg.selectAll("rect")
-                        .classed("search-highlighted", d => {
-                            // Check if query matches ticker or company name
-                            const matchesTicker = d.data.ticker.toUpperCase().includes(query);
-                            const matchesCompany = d.data.Company.toUpperCase().includes(query);
-                            const matchesDisplay = d.data.displayName.toUpperCase().includes(query);
-                            return matchesTicker || matchesCompany || matchesDisplay;
-                        })
-                        .attr("stroke", d => {
-                            // Set stroke color based on match
-                            const matches = d.data.ticker.toUpperCase().includes(query) || 
-                                          d.data.Company.toUpperCase().includes(query) ||
-                                          d.data.displayName.toUpperCase().includes(query);
-                            return matches ? "#FFD700" : "#fff";  // Gold for matches, white for others
-                        })
-                        .attr("stroke-width", d => {
-                            // Set stroke width based on match
-                            const matches = d.data.ticker.toUpperCase().includes(query) || 
-                                          d.data.Company.toUpperCase().includes(query) ||
-                                          d.data.displayName.toUpperCase().includes(query);
-                            return matches ? 2 : 1;  // Thicker stroke for matches
-                        })
-                        .style("opacity", d => {
-                            // Lower opacity for non-matching companies
-                            const matches = d.data.ticker.toUpperCase().includes(query) || 
-                                          d.data.Company.toUpperCase().includes(query) ||
-                                          d.data.displayName.toUpperCase().includes(query);
-                            return matches ? 1 : 0.2;  // Full opacity for matches, 20% for others
-                        });
+                        .classed("search-highlighted", isMatch)
+                        .classed("sector-highlighted", false)
+                        .attr("stroke", d => isMatch(d) ? "#06b6d4" : "#fff")
+                        .attr("stroke-width", d => isMatch(d) ? 2 : 1)
+                        .style("opacity", d => isMatch(d) ? 1 : 0.1)
+                        .style("filter", d => isMatch(d) ? "brightness(1.1) drop-shadow(0 0 4px rgba(6, 182, 212, 0.4))" : "none");
                 }
             }
             
@@ -894,28 +1148,28 @@
                         .attr("x2", xScale(currentYear))
                         .attr("y1", 0)
                         .attr("y2", chartHeight)
-                        .attr("stroke", "#FF6B6B")  // Red color for visibility
-                        .attr("stroke-width", 1.6)
-                        .attr("stroke-dasharray", "4,4")  // Dashed line
+                        .attr("stroke", "#06b6d4")
+                        .attr("stroke-width", 2)
+                        .attr("stroke-dasharray", "5,5")  // Dashed line
                         .style("pointer-events", "none");  // Don't interfere with interactions
                     
                     // Add label for current year line
                     g.append("text")
                         .attr("class", "current-year-label")
                         .attr("x", xScale(currentYear))
-                        .attr("y", -4)
+                        .attr("y", -5)
                         .attr("text-anchor", "middle")
-                        .style("font-size", "7.2px")  // Smaller font for sidebar
+                        .style("font-size", "9px")  // Smaller font for sidebar
                         .style("font-weight", "bold")
-                        .style("fill", "#FF6B6B")
+                        .style("fill", "#06b6d4")
                         .text(`${currentYear}`);
                 }
             }
             
             // Function to create line chart showing company's market cap over time
             function createCompanyTimeline(ticker, companyName) {
-                // Filter data for this specific company across all years, excluding 2025
-                const companyData = data.filter(d => d.ticker === ticker && d.Year !== 2025);
+                // Filter data for this specific company across all years
+                const companyData = data.filter(d => d.ticker === ticker);
                 
                 // If no data found, don't show chart
                 if (companyData.length === 0) {
@@ -935,14 +1189,14 @@
                 d3.select("#timeline-chart").html("");
                 
                 // Chart dimensions (adjusted for sidebar width)
-                const margin = {top: 16, right: 8, bottom: 32, left: 48};
-                const chartWidth = 280 - margin.left - margin.right;  // Sidebar width minus margins
-                const chartHeight = 200 - margin.top - margin.bottom;  // Shorter height for sidebar
+                const margin = {top: 20, right: 10, bottom: 40, left: 60};
+                const chartWidth = 350 - margin.left - margin.right;  // Sidebar width minus margins
+                const chartHeight = 250 - margin.top - margin.bottom;  // Shorter height for sidebar
                 
                 // Create SVG
                 const timelineSvg = d3.select("#timeline-chart")
                     .append("svg")
-                    .attr("viewBox", [0, 0, 280, 200])  // Adjusted viewBox for sidebar
+                    .attr("viewBox", [0, 0, 350, 250])  // Adjusted viewBox for sidebar
                     .style("width", "100%")
                     .style("height", "auto");
                 
@@ -984,11 +1238,11 @@
                     .y(d => yScale(d.MarketCap_BillionsUSD))
                     .curve(d3.curveMonotoneX);  // Smooth curve
                 
-                // Create line generator for gap segments (non-consecutive years) - NOW WITH CURVE
+                // Create line generator for gap segments (non-consecutive years)
                 const gapLine = d3.line()
                     .x(d => xScale(d.Year))
                     .y(d => yScale(d.MarketCap_BillionsUSD))
-                    .curve(d3.curveMonotoneX);  // Changed from curveLinear to curveMonotoneX
+                    .curve(d3.curveLinear);  // Straight line for gaps (no smoothing)
                 
                 // Draw lines connecting all data points
                 // For consecutive years: solid green line
@@ -1020,20 +1274,18 @@
                     .attr("class", "dot")
                     .attr("cx", d => xScale(d.Year))
                     .attr("cy", d => yScale(d.MarketCap_BillionsUSD))
-                    .attr("r", 3.2)
+                    .attr("r", 4)
                     .on("mouseover", function(event, d) {
                         // Show tooltip on hover
                         tooltip.transition().duration(200).style("opacity", 1);
                         tooltip.html(`
                             <div class="tooltip-title">${d.Year}</div>
-                            <div><strong>Market Cap:</strong> $${d.MarketCap_BillionsUSD}B</div>
+                            <div><strong>Market Cap:</strong> $${formatMarketCap(d.MarketCap_BillionsUSD)}</div>
                             <div><strong>Rank:</strong> #${d.Rank}</div>
                         `)
                         .style("left", (event.pageX + 10) + "px")
                         .style("top", (event.pageY - 10) + "px");
-                        
-                        // Enlarge the dot
-                        d3.select(this).attr("r", 4.8);
+                        d3.select(this).attr("r", 6);
                     })
                     .on("mousemove", function(event) {
                         tooltip
@@ -1042,7 +1294,7 @@
                     })
                     .on("mouseout", function() {
                         tooltip.transition().duration(200).style("opacity", 0);
-                        d3.select(this).attr("r", 3.2);
+                        d3.select(this).attr("r", 4);
                     })
                     .on("click", function(event, d) {
                         // Stop playing if auto-play is active
@@ -1056,33 +1308,37 @@
                     });
                 
                 // Add X axis
-                g.append("g")
+                const xAxis = g.append("g")
                     .attr("class", "axis")
                     .attr("transform", `translate(0,${chartHeight})`)
                     .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));  // Integer years
+                xAxis.selectAll("text").style("fill", "#6b7280");
+                xAxis.selectAll("line, path").style("stroke", "#e5e7eb");
                 
                 // Add Y axis
-                g.append("g")
+                const yAxis = g.append("g")
                     .attr("class", "axis")
                     .call(d3.axisLeft(yScale).ticks(5));
+                yAxis.selectAll("text").style("fill", "#6b7280");
+                yAxis.selectAll("line, path").style("stroke", "#e5e7eb");
                 
                 // Add Y axis label
                 g.append("text")
                     .attr("transform", "rotate(-90)")
-                    .attr("y", -36)  // Adjusted for smaller left margin
+                    .attr("y", -45)  // Adjusted position for sidebar
                     .attr("x", -chartHeight / 2)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "8px")  // Smaller font for sidebar
-                    .style("fill", "#666")
+                    .style("font-size", "10px")  // Smaller font for sidebar
+                    .style("fill", "#6b7280")
                     .text("Market Cap ($B)");
                 
                 // Add X axis label
                 g.append("text")
                     .attr("x", chartWidth / 2)
-                    .attr("y", chartHeight + 28)
+                    .attr("y", chartHeight + 35)
                     .attr("text-anchor", "middle")
-                    .style("font-size", "8px")  // Smaller font for sidebar
-                    .style("fill", "#666")
+                    .style("font-size", "10px")  // Smaller font for sidebar
+                    .style("fill", "#6b7280")
                     .text("Year");
                 
                 // Add current year indicator
@@ -1095,8 +1351,8 @@
     </script>
 
 <!-- Footer with attribution -->
-<div style="text-align: center; padding: 16px; color: #666; font-size: 11.2px; border-top: 1px solid #e0e0e0; margin-top: 32px;">
-  Created for CSE442 Class at the University of Washington by Shreyan Mitra.<br>
+<div style="text-align: center; padding: 20px; color: #666; font-size: 14px; border-top: 1px solid #e0e0e0; margin-top: 40px;">
+  Created for CSE442 Class at the University of Washington by Shreyan Mitra, Kalkidan Maru and Biniyam Gebreyohannes.<br>
   
   <!-- Data source attribution links -->
   <div class="data-attribution">
