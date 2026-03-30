@@ -1,6 +1,6 @@
 # Market Evolution
 
-Interactive **D3.js treemap** of the largest U.S. public companies by **market capitalization (1989–2024)**. Rectangle area reflects relative market cap; color encodes **GICS-style sector**. The visualization was built for **CSE 442** (Data Visualization).
+Interactive **D3.js treemap** of the largest U.S. public companies by **market capitalization (1989–2024)**. Rectangle area reflects relative market cap; color encodes **GICS-style sector**. The visualization was built for **CSE 442** (Data Visualization) at the University of Washington.
 
 **Live site:** [https://shreyanmitra.github.io/market-evolution/](https://shreyanmitra.github.io/market-evolution/)
 
